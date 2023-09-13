@@ -1,0 +1,201 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<!-- 
+	静态资源文件表
+ -->
+<mapper namespace="wcms.fileSearch">
+	<!--属性映射 -->
+	<resultMap type="cn.newstrength.wcms.sysadmin.fs.obj.FsObj" id="queryResult">
+		<id property="id" 										column="id" />
+   <result property="sameId" 					column="same_id"/>
+   <result property="siteId" 					column="site_id"/>
+   <result property="fileName" 				column="file_name"/>
+   <result property="fileExtension" 	column="file_extension"/>
+   <result property="filePath" 				column="file_path"/>
+   <result property="parentPath" 			column="parent_path"/>
+   <result property="fileSize" 				column="file_size"/>
+   <result property="fileType" 				column="file_type"/>
+   <result property="siteCode" 				column="site_code"/>
+   <result property="orgCode" 					column="org_code"/>
+   <result property="owner" 						column="owner"/>
+   <result property="createTime" 			column="create_time"/>
+   <result property="status" 				column="status"/>
+   <result property="remark" 					column="remark"/>
+	</resultMap>
+	<!-- 表名定义 -->
+	<sql id="table">
+		TBL_WCMS_STATICS
+	</sql>
+	<!-- 列名定义 -->
+	<sql id="columns">
+		${alias}.id, 
+		${alias}.same_id, 
+		${alias}.site_id, 
+		${alias}.file_name, 
+		${alias}.file_extension, 
+		${alias}.file_path, 
+		${alias}.parent_path, 
+		${alias}.file_size, 
+		${alias}.file_type,
+		${alias}.site_code, 
+		${alias}.org_code, 
+		${alias}.owner, 
+		${alias}.create_time, 
+		${alias}.status, 
+		${alias}.remark
+	</sql>
+	
+	<!-- 默认排序 -->
+	<sql id="orderby">
+		order by ${alias}.file_type desc, ${alias}.create_time , ${alias}.file_path asc
+	</sql>
+	
+	<!-- 查询条件定义 --><!-- creator,wjtype,searchpath -->
+	<sql id="conditions">
+		<where>
+			<if test="id != null">
+				and ${alias}.id = #{id,jdbcType=VARCHAR}
+			</if>
+			<if test="siteId != null">
+				and ${alias}.site_id = #{siteId,jdbcType=NUMERIC}
+			</if>
+			<if test="siteCode != null">
+				and ${alias}.site_code = #{siteCode,jdbcType=VARCHAR}
+			</if>
+			<if test="orgCode != null">
+				and ${alias}.org_code = #{orgCode,jdbcType=VARCHAR}
+			</if>
+			<if test="owner != null">
+				and ${alias}.owner = #{owner,jdbcType=VARCHAR}
+			</if>
+			<if test="status != null">
+				and ${alias}.status = #{status,jdbcType=VARCHAR}
+			</if>
+			<if test="filePath != null">
+				and ${alias}.file_path = #{filePath, jdbcType=VARCHAR}
+			</if>
+			<if test="parentPath != null">
+				and ${alias}.parent_path like concat(#{parentPath, jdbcType=VARCHAR},'%')
+			</if>
+			<if test="sameId != null">
+				and ${alias}.same_id = #{sameId, jdbcType=VARCHAR}
+			</if>
+			<if test="path != null">
+				and ${alias}.file_path like concat(#{path, jdbcType=VARCHAR},'%')
+			</if>
+			<if test="wjtype != null">
+				and ${alias}.file_name like concat('%',#{wjtype, jdbcType=VARCHAR})
+			</if>
+			<if test="searchpath != null">
+				and ${alias}.file_path like concat('%',#{searchpath, jdbcType=VARCHAR},'%')
+			</if>
+		</where>
+	</sql>
+	
+	<!-- Select -->
+	<select id="search" resultMap="queryResult">
+		select * from (select rownum as k  ,a.* from (
+		SELECT 
+		<include refid="columns">
+			<property name="alias" value="fs"/>
+		</include>
+		FROM <include refid="table"/> fs
+		<include refid="conditions">
+			<property name="alias" value="fs"/>
+		</include>
+		<include refid="orderby">
+			<property name="alias" value="fs"/>
+		</include>
+		) a)b
+		where k between #{min} and #{max}
+	</select>
+	
+	<select id="count" resultType="int">
+		select count(1) 
+		from <include refid="table"/> fs
+		<include refid="conditions">
+			<property name="alias" value="fs"/>
+		</include>
+	</select>
+	
+	<!-- 写入记录 -->
+	<insert id="insert">
+		INSERT INTO <include refid="table" /> (
+			id, same_id, site_id, site_code, file_name, file_extension, file_path, parent_path, file_size, file_type, org_code, status, remark, owner, create_time
+		) VALUES (
+			#{id, 									jdbcType=VARCHAR},
+			#{sameId, 						jdbcType=VARCHAR},
+			#{siteId, 						jdbcType=NUMERIC},
+			#{siteCode, 					jdbcType=VARCHAR},
+			#{fileName, 					jdbcType=VARCHAR},
+			#{fileExtension, 		jdbcType=VARCHAR},
+			#{filePath, 					jdbcType=VARCHAR},
+			#{parentPath, 				jdbcType=VARCHAR},
+			#{fileSize,						jdbcType=VARCHAR},
+			#{fileType,						jdbcType=VARCHAR},
+			#{orgCode, 						jdbcType=VARCHAR},
+			#{status, 						jdbcType=VARCHAR},
+			#{remark, 						jdbcType=VARCHAR},
+			#{owner,							jdbcType=VARCHAR},
+			#{createTime,				jdbcType=VARCHAR}
+		)
+	</insert>
+	<!-- 批量插入记录 -->
+	<insert id="batchInsert">
+		INSERT INTO <include refid="table" /> (
+			id, same_id, site_id, site_code, file_name, file_extension, file_path, parent_path, file_size, file_type, org_code, status, remark, owner, create_time
+		) VALUES 
+		<foreach collection="list" item="item" index="index" separator=","> 
+			(
+			#{item.id, 									jdbcType=VARCHAR},
+			#{item.sameId, 						jdbcType=VARCHAR},
+			#{item.siteId, 						jdbcType=NUMERIC},
+			#{item.siteCode, 					jdbcType=VARCHAR},
+			#{item.fileName, 					jdbcType=VARCHAR},
+			#{item.fileExtension, 		jdbcType=VARCHAR},
+			#{item.filePath, 					jdbcType=VARCHAR},
+			#{item.parentPath, 				jdbcType=VARCHAR},
+			#{item.fileSize,					jdbcType=VARCHAR},
+			#{item.fileType,					jdbcType=VARCHAR},
+			#{item.orgCode, 					jdbcType=VARCHAR},
+			#{item.status,							jdbcType=VARCHAR},
+			#{item.remark, 						jdbcType=VARCHAR},
+			#{item.owner,							jdbcType=VARCHAR},
+			#{item.createTime,				jdbcType=VARCHAR}
+		)
+		</foreach>
+	</insert>
+	
+	<!-- 状态更新 -->
+	<update id="updateStatus">
+		update <include refid="table" /> 
+		set status=#{status,jdbcType=VARCHAR}, remark=#{remark,jdbcType=VARCHAR}
+		where same_id = #{sameId, jdbcType=VARCHAR}
+	</update>
+	
+	<!-- 删除记录 -->
+	<delete id="deleteById">
+		DELETE FROM <include refid="table" /> WHERE id = #{id, jdbcType=VARCHAR} and same_id = #{sameId, jdbcType=VARCHAR}
+	</delete>
+	
+	<resultMap type="map" id="queryInfoResult">
+		<id property="id" 										column="id" />
+   <result property="filePath" 				column="file_path"/>
+   <result property="createTime" 			column="create_time"/>
+   <result property="orgName" 					column="org_name"/>
+   <result property="userName" 				column="user_name"/>
+   <result property="owner" 				column="owner"/>
+	</resultMap>
+	<select id="queryInfo" resultMap="queryInfoResult">
+		select 
+		fs.ID ,fs.FILE_PATH ,fs.OWNER, fs.CREATE_TIME ,org.ORG_NAME ,u.USER_NAME 
+		from TBL_WCMS_STATICS fs inner join TBL_WIDM_ORG org on fs.ORG_CODE =org.ORG_CODE
+		inner join tbl_widm_user u on fs.OWNER  = u.USER_CODE 
+		where fs.id = #{id,jdbcType=VARCHAR}
+	</select>
+</mapper>
+
+
+
+
+

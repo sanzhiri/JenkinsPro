@@ -1,0 +1,88 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE operation-cfg PUBLIC "-//PAI//DTD OPERATIONS//CN" "http://wtdf.newstrength.cn/wtdf/wtdf-operations-3.0.dtd">
+<operation-cfg>
+
+	<operation id="/sys/list" name="系统列表查询" type="api" token="true">
+		<context>
+			<Record name="input">
+				<string name="sysCode"/>
+				<string name="sysName"/>
+			</Record>
+		</context>
+		<step id="step1" on0Target="return" onOtherTarget="error" class-ref="QueryForListStep">
+			<context>
+				<string name="mapSet">input</string>
+				<string name="resource">widm.sys.selectList</string>
+			</context>
+		</step>
+	</operation>
+	
+	<operation id="/sys/getById" name="系统详情接口" type="api" token="true">
+		<context>
+			<Record name="input">
+				<int name="sysId" required="true" desc="系统ID" />
+			</Record>
+		</context>
+		<step id="step1" on0Target="return" onOtherTarget="error" class-ref="QueryForObjectStep">
+			<context>
+				<string name="mapSet">input</string>
+				<string name="resource">widm.sys.getById</string>
+			</context>
+		</step>
+	</operation>
+	
+	<operation id="/sys/update" name="系统更新接口" type="api" token="true">
+		<context>
+			<Record name="input">
+				<int name="sysId" required="true" desc="系统ID" />
+				<string name="sysName" desc="系统名称" />
+				<string name="status" desc="状态" />
+				<string name="sysRemark" desc="系统备注" />
+			</Record>
+		</context>
+		<step id="step1" on0Target="return" onOtherTarget="error" class-ref="UpdateStep">
+			<context>
+				<string name="mapSet">input</string>
+				<string name="resource">widm.sys.update</string>
+			</context>
+		</step>
+	</operation>
+	
+	<operation id="/sys/create" name="系统创建接口" type="api" token="true">
+		<context>
+			<Record name="input">
+				<string name="sysCode" required="true" regex="^[A-Z]+$" desc="系统编码"/>
+				<string name="sysName" required="true" desc="系统名称" />
+				<string name="status" required="true" desc="状态" />
+				<string name="sysRemark" desc="系统备注" />
+			</Record>
+		</context>
+		<step id="step1" on0Target="step2" onOtherTarget="error" class-ref="CheckByCountStep">
+			<context>
+				<string name="mapSet">input</string>
+				<string name="alert">系统编码重复，请重新填写.</string>
+				<string name="resource">widm.sys.checkCode</string>
+			</context>
+		</step>
+		<step id="step2" on0Target="return" onOtherTarget="error" class-ref="InsertStep">
+			<context>
+				<string name="mapSet">input</string>
+				<string name="resource">widm.sys.create</string>
+			</context>
+		</step>
+	</operation>
+	
+	<operation id="/sys/deleteById" name="系统删除接口" type="api" token="true">
+		<context>
+			<Record name="input">
+				<int name="sysId" required="true" desc="系统ID" />
+			</Record>
+		</context>
+		<step id="step1" on0Target="return" onOtherTarget="error" full-class="cn.newstrength.widm.step.sys.SafeDeleteStep">
+			<context>
+				<string name="mapSet">input</string>
+				<string name="resource">widm.sys.deleteById</string>
+			</context>
+		</step>
+	</operation>	
+</operation-cfg>

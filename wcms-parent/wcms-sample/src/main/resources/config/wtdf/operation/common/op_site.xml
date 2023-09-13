@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE operation-cfg PUBLIC "-//PAI//DTD OPERATIONS//CN" "http://wtdf.newstrength.cn/wtdf/wtdf-operations-3.0.dtd">
+
+<operation-cfg>
+	<opstep-def id="SiteListStep" desc="站点列表" full-class="cn.newstrength.wcms.fe.site.step.SiteListStep" />
+</operation-cfg>

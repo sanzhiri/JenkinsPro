@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE operation-cfg PUBLIC "-//PAI//DTD OPERATIONS//CN" "http://wtdf.newstrength.cn/wtdf/wtdf-operations-3.0.dtd">
+
+<operation-cfg>
+
+	<operation id="/org/query" name="机构名称" type="api" token="false">
+		<step id="ver" on0Target="return" onOtherTarget="error" full-class="cn.newstrength.logger.wcms.audit.org.OrgStep">
+			<context>
+				<string name="mapSet">input</string>
+				<string name="resource">cn.newstrength.logger.mapper.OrgRole.orgQuery</string>
+			</context>
+		</step>
+	</operation>
+
+	<operation id="/role/query" name="角色查询" type="api" token="false">
+		<step id="ver" on0Target="return" onOtherTarget="error" full-class="cn.newstrength.logger.wcms.audit.role.RoleStep">
+			<context>
+				<string name="mapSet">input</string>
+				<string name="resource">cn.newstrength.logger.mapper.OrgRole.orgQuery</string>
+			</context>
+		</step>
+	</operation>
+	
+</operation-cfg>

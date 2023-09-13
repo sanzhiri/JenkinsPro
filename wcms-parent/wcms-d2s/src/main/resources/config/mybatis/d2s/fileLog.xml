@@ -1,0 +1,132 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<!-- 动转静事件记录 -->
+<mapper namespace="wcms.d2s.filelog">
+    <resultMap id="fileLogResultMap" type="cn.newstrength.wcms.d2s.bo.FileLogBo">
+        <result column="id" property="id" jdbcType="INTEGER"/>
+        <result column="event_id" property="eventId" jdbcType="INTEGER"/>
+        <result column="publish_type" property="publishType" jdbcType="VARCHAR"/>
+        <result column="publish_type_desc" property="publishTypeDesc" jdbcType="VARCHAR"/>
+        <result column="status" property="status" jdbcType="CHAR"/>
+        <result column="status_desc" property="statusDesc" jdbcType="CHAR"/>
+        <result column="site_id" property="siteId" jdbcType="INTEGER"/>
+        <result column="channel_id" property="channelId" jdbcType="INTEGER"/>
+        <result column="info_id" property="infoId" jdbcType="INTEGER"/>
+        <result column="file_name" property="fileName" jdbcType="VARCHAR"/>
+        <result column="file_path" property="filePath" jdbcType="VARCHAR"/>
+        <result column="preview_url" property="previewUrl" jdbcType="VARCHAR"/>
+        <result column="create_time" property="createTime" jdbcType="TIMESTAMP"/>
+        <result column="current_page" property="currentPage" jdbcType="INTEGER"/>
+        <result column="template_id" property="templateId" jdbcType="INTEGER"/>
+        <result column="error_reason" property="errorReason" jdbcType="CLOB"/>
+    </resultMap>
+    <sql id="table">
+        tbl_wcms_d2s_file_log
+    </sql>
+    <sql id="columns">
+        ${alias}.id,
+        ${alias}.event_id,
+        ${alias}.publish_type,
+        ${alias}.publish_type as publish_type_desc,
+        ${alias}.status,
+        ${alias}.status as status_desc,
+        ${alias}.site_id,
+        ${alias}.channel_id,
+        ${alias}.info_id,
+        ${alias}.file_name,
+        ${alias}.file_path,
+        ${alias}.file_path as preview_url,
+        ${alias}.create_time,
+        ${alias}.current_page,
+        ${alias}.template_id,
+        ${alias}.error_reason
+    </sql>
+    <!-- 列表查询条件 -->
+    <sql id="listPageConditions">
+        ${alias}.site_id = #{siteId}
+        <if test="eventId != null">and ${alias}.event_id = #{eventId}</if>
+        <if test="publishType != null">and ${alias}.publish_type = #{publishType}</if>
+        <if test="status != null">and ${alias}.status = #{status}</if>
+    </sql>
+    <!-- 批量插入 -->
+    <insert id="insertBatch">
+        INSERT INTO <include refid="table" />
+        (event_id,publish_type,status,site_id,channel_id,info_id,file_name,file_path,current_page,template_id,create_time,error_reason)
+        VALUES
+        <foreach collection="list" item="fileLog" index="index" separator=",">
+            (#{fileLog.eventId},#{fileLog.publishType},#{fileLog.status},#{fileLog.siteId},#{fileLog.channelId},
+            #{fileLog.infoId},#{fileLog.fileName},#{fileLog.filePath},#{fileLog.currentPage},#{fileLog.templateId},now(),#{fileLog.errorReason, jdbcType=VARCHAR})
+        </foreach>
+    </insert>
+    <!-- 生成文件总记录数 -->
+    <select id="listCount" parameterType="hashMap" resultType="int">
+        SELECT
+        count(1)
+        from
+        <include refid="table"/> fileLog
+        where
+        <include refid="listPageConditions">
+            <property name="alias" value="fileLog"/>
+        </include>
+    </select>
+    <!-- 生成文件记录列表 -->
+    <select id="getFileLogById" parameterType="hashMap" resultMap="fileLogResultMap">
+        SELECT
+        <include refid="columns">
+            <property name="alias" value="fileLog"/>
+        </include>
+        from <include refid="table"/> fileLog
+        where 1=1
+        <if test="id !=null">
+            and fileLog.id=#{id}
+        </if>
+        <if test="status != null" >
+            and fileLog.status = #{status}
+        </if>
+        <if test="siteId != null">
+            and fileLog.site_id = #{siteId}
+        </if>
+        <if test="eventId != null">
+            and fileLog.event_id = #{eventId}
+        </if>
+        <if test="channelId != null">
+            and fileLog.channel_id = #{channelId}
+        </if>
+        <if test="infoId != null">
+            and fileLog.info_id = #{infoId}
+        </if>
+        <if test="publishType != null">
+            and fileLog.publish_type = #{publishType}
+        </if>
+        <if test="templateId != null">
+            and fileLog.template_id = #{templateId}
+        </if>
+        <if test="currentPage != null">
+            and fileLog.current_page = #{currentPage}
+        </if>
+        LIMIT 1
+    </select>
+    <!-- 根据文件ID获取文件记录对象 -->
+    <select id="listPage" parameterType="hashMap" resultMap="fileLogResultMap">
+        SELECT
+        <include refid="columns">
+            <property name="alias" value="fileLog"/>
+        </include>
+        from <include refid="table"/> fileLog
+        where
+        <include refid="listPageConditions">
+            <property name="alias" value="fileLog"/>
+        </include>
+        order by fileLog.create_time desc
+    </select>
+    <!-- 更新文件状态 -->
+    <update id="update" parameterType="cn.newstrength.wcms.d2s.model.FileLog">
+        update <include refid="table"/>
+        <set>
+            <if test="status != null">
+                status =  #{status, jdbcType=VARCHAR},
+            </if>
+        </set>
+        where id = #{id}
+    </update>
+</mapper>

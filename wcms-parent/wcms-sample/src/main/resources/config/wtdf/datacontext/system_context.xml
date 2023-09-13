@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE data PUBLIC "-//PAI//DTD OPERATIONS//CN"	"http://wtdf.newstrength.cn/wtdf/wtdf-operations-3.0.dtd">
+<data>
+	<string name="_root" />
+	<string name="_ctx" />
+	<int name="_pageSize">20</int>
+	<string name="_successPage">/common/success.jsp</string>
+	<string name="_errorPage">/common/success.jsp</string>
+	<string name="_errorPage">/common/success.jsp</string>
+	<string name="tempDir">d:/temp/upload</string>
+</data>

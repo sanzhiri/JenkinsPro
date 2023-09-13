@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE data PUBLIC 	"-//PAI//DTD OPERATIONS//CN" "http://wtdf.newstrength.cn/wtdf/wtdf-data-3.0.dtd">
+<data>
+	<!-- 微服务配置 -->
+	<Record name="_api">
+		<int name="errCode" />
+		<string name="errMsg" />
+		<object name="data" />
+	</Record>
+</data>

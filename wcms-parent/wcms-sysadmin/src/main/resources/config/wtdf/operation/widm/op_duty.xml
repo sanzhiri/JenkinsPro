@@ -1,0 +1,107 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE operation-cfg PUBLIC "-//PAI//DTD OPERATIONS//CN" "http://wtdf.newstrength.cn/wtdf/wtdf-operations-3.0.dtd">
+<operation-cfg>
+
+	<operation id="/duty/tree" name="职务树查询" type="api" token="true">
+		<context>
+			<Record name="input">
+				<int name="parentId" desc="父节点"/>
+			</Record>
+		</context>
+		<step id="step1" on0Target="return" onOtherTarget="error" class-ref="QueryForListStep">
+			<context>
+				<string name="mapSet">input</string>
+				<string name="resource">widm.duty.queryTree</string>
+			</context>
+		</step>
+	</operation>
+
+	<operation id="/duty/children" name="子节点数据" type="api" token="true">
+		<context>
+			<Record name="input">
+				<int name="parentId" desc="父节点"/>
+			</Record>
+		</context>
+		<step id="step1" on0Target="return" onOtherTarget="error" class-ref="QueryForListStep">
+			<context>
+				<string name="mapSet">input</string>
+				<string name="resource">widm.duty.queryChildren</string>
+			</context>
+		</step>
+	</operation>
+		
+	<operation id="/duty/getById" name="职务详情接口" type="api" token="true">
+		<context>
+			<Record name="input">
+				<int name="dutyId" required="true" desc="职务ID" />
+			</Record>
+		</context>
+		<step id="step1" on0Target="return" onOtherTarget="error" class-ref="QueryForObjectStep">
+			<context>
+				<string name="mapSet">input</string>
+				<string name="resource">widm.duty.getById</string>
+			</context>
+		</step>
+	</operation>
+	
+	<operation id="/duty/create" name="职务创建接口" type="api" token="true">
+		<context>
+			<Record name="input">
+				<int name="dutyParentId" required="true" desc="上级职务" />
+				<string name="dutyName" required="true" desc="职务名称"/>
+				<string name="remark" desc="备注" />
+			</Record>
+		</context>
+		<step id="step1" on0Target="return" onOtherTarget="error" class-ref="InsertStep">
+			<context>
+				<string name="mapSet">input</string>
+				<string name="resource">widm.duty.create</string>
+			</context>
+		</step>
+	</operation>
+
+	<operation id="/duty/update" name="职务更新接口" type="api" token="true">
+		<context>
+			<Record name="input">
+				<int name="dutyId" required="true" desc="职务ID" />
+				<int name="dutyParentId" desc="上级职务" />
+				<string name="dutyName" desc="职务名称"/>
+				<string name="remark" desc="备注" />
+				<string name="aclTags" desc="访问控制标签" />
+			</Record>
+		</context>
+		<step id="step1" on0Target="return" onOtherTarget="error" class-ref="UpdateStep">
+			<context>
+				<string name="mapSet">input</string>
+				<string name="resource">widm.duty.update</string>
+			</context>
+		</step>
+	</operation>
+			
+	<operation id="/duty/deleteById" name="职务删除接口" type="api" token="true">
+		<context>
+			<Record name="input">
+				<int name="dutyId" required="true" desc="职务ID" />
+			</Record>
+		</context>
+		<step id="step0" on0Target="step1" onOtherTarget="error" class-ref="CheckByCountStep">
+			<context>
+				<string name="mapSet">input</string>
+				<string name="resource">widm.duty.count-children</string>
+			</context>
+		</step>	
+		<step id="step1" on0Target="step2" onOtherTarget="error" class-ref="CheckByCountStep">
+			<context>
+				<string name="mapSet">input</string>
+				<string name="alert">请先移除用户职务关系</string>
+				<string name="resource">widm.user.count-duty</string>
+			</context>
+		</step>	
+		<step id="step2" on0Target="return" onOtherTarget="error" class-ref="DeleteStep">
+			<context>
+				<string name="mapSet">input</string>
+				<string name="resource">widm.duty.deleteById</string>
+			</context>
+		</step>
+	</operation>	
+</operation-cfg>

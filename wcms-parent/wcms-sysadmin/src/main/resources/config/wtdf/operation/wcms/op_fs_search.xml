@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE operation-cfg PUBLIC "-//PAI//DTD OPERATIONS//CN" "http://wtdf.newstrength.cn/wtdf/wtdf-operations-3.0.dtd">
+<operation-cfg>
+<!-- 静态文件搜索 -->
+	<operation id="/fs/static/searchls" name="静态资源" type="api" token="true">
+		<context>
+			<Record name="input">
+				<string name="creator" desc="创建人" />
+				<string name="wjtype" desc="文件类型" />
+				<string name="searchpath" desc="搜索文件地址" />
+				<string name="path" desc="文件地址" />
+				<string name="hidden" desc="是否显示隐藏文件" />
+				<string name="site_id" desc="站点Id" />
+				<string name="pageSize" desc="每页条数" />
+				<string name="currentPage" desc="当前页码" />
+			</Record>
+		</context>
+		<step id="ls" on0Target="return" onOtherTarget="error" full-class="cn.newstrength.wcms.sysadmin.step.fs.FileSearchStep">
+			<context>
+				<string name="mapSet">input</string>
+				<string name="resource">wcms.static.resource.directory</string>
+			</context>
+		</step>
+	</operation>
+</operation-cfg>

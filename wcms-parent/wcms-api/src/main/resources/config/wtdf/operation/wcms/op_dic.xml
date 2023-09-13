@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  ~ Copyright (c) 2020, NewStrength. All rights reserved.
+  -->
+<!DOCTYPE operation-cfg PUBLIC "-//PAI//DTD OPERATIONS//CN" "http://wtdf.newstrength.cn/wtdf/wtdf-operations-3.0.dtd">
+<operation-cfg>
+    <!-- 数据字典详情 -->
+    <operation id="/dic" name="[Api]查询数据字典详情" type="api" token="true">
+        <context>
+            <Record name="input">
+                <string name="key" required="true" desc="字典父编码"/>
+                <string name="code" required="true" desc="字典当前编码"/>
+                <string name="appId" required="true" desc="应用id"/>
+            </Record>
+        </context>
+        <step id="authStep" on0Target="next" onOtherTarget="error" class-ref="apiAuthExcludeSiteCodeStep">
+            <context>
+                <string name="mapSet">input</string>
+            </context>
+        </step>
+        <step id="queryDicStep" on0Target="return" onOtherTarget="error" class-ref="queryDicStep">
+            <context>
+                <string name="mapSet">input</string>
+            </context>
+        </step>
+    </operation>
+    <!-- 数据字典详情 -->
+    <operation id="/dics" name="[Api]查询数据字典列表" type="api" token="true">
+        <context>
+            <Record name="input">
+                <string name="key" required="true" desc="字典父编码"/>
+                <string name="appId" required="true" desc="应用id"/>
+            </Record>
+        </context>
+        <step id="authStep" on0Target="next" onOtherTarget="error" class-ref="apiAuthExcludeSiteCodeStep">
+            <context>
+                <string name="mapSet">input</string>
+            </context>
+        </step>
+        <step id="queryDicsStep" on0Target="return" onOtherTarget="error" class-ref="queryDicsStep">
+            <context>
+                <string name="mapSet">input</string>
+            </context>
+        </step>
+    </operation>
+
+</operation-cfg>

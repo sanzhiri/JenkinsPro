@@ -1,0 +1,152 @@
+#------------------------------------------------------------------------
+# Server port
+server:
+    port: 10001
+#------------------------------------------------------------------------   
+# Hystrix 
+hystrix:
+  command: 
+    fallbackcmd:
+      execution:
+        isolation:
+          thread:
+            timeoutInMilliseconds: 6000 
+#------------------------------------------------------------------------   
+# Eureka client
+eureka:
+    instance:
+       prefer-ip-address: true
+    client:
+        serviceUrl:
+            defaultZone: http://localhost:20001/eureka/
+        registry-fetch-interval-seconds: 30 
+#------------------------------------------------------------------------
+# Spring cloud      
+spring:
+  application:
+    name: wcms-gateway
+#------------------------------------------------------------------------
+#Redis
+  redis:
+    host: localhost
+    port: 6379
+    jedis:
+      pool:
+        min-idle: 1
+        max-active: 100
+        max-idle: 5
+        max-wait: 1000
+  #------------------------------------------------------------------------
+  cloud:
+    gateway: 
+      discovery:
+        locator:
+          enabled: true
+      routes:
+#------------------------------------------------------------------------
+#    WCMS-SYSADMIN
+#------------------------------------------------------------------------
+      - id: wcms_sysadmin_service_route
+        uri: lb://WCMS-SYSADMIN
+        predicates:
+        - Path=/sysadmin/**
+        filters:
+        - StripPrefix=1
+        - name: Hystrix
+          args:
+            name: fallbackcmd
+            fallbackUri: forward:/fallback
+#------------------------------------------------------------------------
+#    WCMS-D2S
+#------------------------------------------------------------------------
+      - id: wcms_d2s_service_route
+        uri: lb://WCMS-D2S
+        predicates:
+        - Path=/d2s/**
+        filters:
+        - StripPrefix=1
+#------------------------------------------------------------------------
+#    WCMS-SEARCHER
+#------------------------------------------------------------------------
+      - id: wcms_searcher_service_route
+        uri: lb://WCMS-SEARCHER
+        predicates:
+        - Path=/searcher/**
+        filters:
+        - StripPrefix=1
+#------------------------------------------------------------------------
+#    WCMS-FLOW
+#------------------------------------------------------------------------
+      - id: wcms_flow_service_route
+        uri: lb://WCMS-FLOW
+        predicates:
+        - Path=/flow/**
+        filters:
+        - StripPrefix=1
+#------------------------------------------------------------------------
+#    NSMS-WIDM
+#------------------------------------------------------------------------
+      - id: widm_service_route
+        uri: lb://NSMS-WIDM
+        predicates:
+        - Path=/widm/**
+        filters:
+        - StripPrefix=1
+        - name: Hystrix
+          args:
+            name: fallbackcmd
+            fallbackUri: forward:/fallback
+#------------------------------------------------------------------------
+#    NSMS-MSC
+#------------------------------------------------------------------------
+      - id: msc_service_route
+        uri: lb://NSMS-MSC
+        predicates:
+        - Path=/msc/**
+        filters:
+        - StripPrefix=1
+        - name: Hystrix
+          args:
+            name: fallbackcmd
+            fallbackUri: forward:/fallback
+#------------------------------------------------------------------------
+#    NSMS-APPS
+#------------------------------------------------------------------------
+      - id: nsms_sample_route
+        uri: lb://NSMS-SAMPLE
+        predicates:
+        - Path=/sample/**
+        filters:
+        - StripPrefix=1
+        - name: RequestRateLimiter
+          args:
+            redis-rate-limiter.replenishRate: 50    # 允许用户每秒处理多少个请求
+            redis-rate-limiter.burstCapacity: 100   # 令牌桶的容量，允许在一秒钟内完成的最大请求数，此值设置为0则阻止所有请求
+            key-resolver: "#{@apiKeyResolver}"      #SPEL表达式去的对应的bean
+        - name: Hystrix
+          args:
+            name: fallbackcmd
+            fallbackUri: forward:/fallback
+        - name: BlacklistFilter
+          args: 
+            blacklist: 192.168.8.16,192.168.1.223
+#------------------------------------------------------------------------
+# Actuator
+management:
+  endpoint:
+    gateway:
+      enabled: true
+  endpoints:
+    web:
+      exposure:
+        include: "*"
+#------------------------------------------------------------------------
+# JWT setting
+#------------------------------------------------------------------------
+jwt: 
+  redis: 
+    key: cn:newstrength:jwt # 应用jwt存储key前缀
+    renewal: true           # 是否开启jwt自动续约
+    ttl: 3600               # SECONDS,默认1小时jwt过期
+
+    

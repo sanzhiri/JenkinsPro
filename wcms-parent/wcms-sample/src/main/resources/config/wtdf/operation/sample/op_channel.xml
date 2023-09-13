@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE operation-cfg PUBLIC "-//PAI//DTD OPERATIONS//CN" "http://wtdf.newstrength.cn/wtdf/wtdf-operations-3.0.dtd">
+
+<operation-cfg>
+
+	<operation id="/channel/list" name="栏目API" type="api">
+		<context>
+			<Record name="input">
+					<string name="siteId" desc="站点ID"/>
+			</Record>
+		</context>
+		<step id="ChannelStep" on0Target="return" onOtherTarget="error" full-class="cn.newstrength.wcms.sample.channel.step.ChannelStep">
+			<context>
+				<string name="mapSet">input</string>
+			</context>
+		</step>
+	</operation>
+
+
+
+	
+</operation-cfg>

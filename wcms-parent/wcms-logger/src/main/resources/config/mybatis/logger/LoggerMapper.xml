@@ -1,0 +1,200 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="cn.newstrength.logger.mapper.LoggerMapper">
+
+    <resultMap type="hashmap" id="resultMap">
+        <result property="serviceId" column="service_id"/>
+        <result property="opId" column="op_id"/>
+        <result property="tranType" column="tran_type"/>
+        <result property="description" column="name"/>
+        <result property="code" column="code"/>
+        <result property="errCode" column="err_code"/>
+        <result property="errMsg" column="err_msg"/>
+        <result property="ex" column="ex"/>
+        <result property="startTime" column="start_time"/>
+        <result property="endTime" column="end_time"/>
+        <result property="remoteAddr" column="remote_addr"/>
+        <result property="localAddr" column="local_addr"/>
+        <result property="runTime" column="run_time"/>
+        <result property="loginId" column="login_id"/>
+        <result property="ext1" column="ext1"/>
+        <result property="ext2" column="ext2"/>
+        <result property="ext3" column="ext3"/>
+        <result property="ext4" column="ext4"/>
+        <result property="ext5" column="ext5"/>
+        <result property="logTime" column="log_time"/>
+        <result property="orgName" column="org_name"/>
+        <result property="roleName" column="role_name"/>
+    </resultMap>
+
+    <sql id="columns">
+		service_id, op_id, tran_type, name, code, err_code, err_msg, ex, 
+		FROM_UNIXTIME(start_time/1000,'%Y-%m-%d %H:%i:%s') start_time,
+		FROM_UNIXTIME(end_time/1000,'%Y-%m-%d %H:%i:%s') end_time,
+		run_time,remote_addr,local_addr,login_id,
+		ext1,ext2,ext3,ext4,ext5,log_time,org_name,role_name
+	</sql>
+    <sql id="conditions">
+        <where>
+            <if test="serviceId != null and serviceId != ''">
+                and service_id = #{serviceId,jdbcType=VARCHAR}
+            </if>
+            <if test="opId != null and opId != ''">
+                and op_Id = #{opId,jdbcType=VARCHAR}
+            </if>
+            <if test="loginId != null and loginId != ''">
+                and login_id = #{loginId,jdbcType=VARCHAR}
+            </if>
+            <if test="description != null and description != ''">
+                and name like concat('%',#{description,jdbcType=VARCHAR},'%')
+            </if>
+            <if test="errMsg != null and errMsg != ''">
+                and err_msg = like concat('%',#{errMsg,jdbcType=VARCHAR},'%')
+            </if>
+            <if test="startDate != null and startDate != ''">
+                and log_time &gt;= #{startDate,jdbcType=VARCHAR}
+            </if>
+            <if test="endDate != null and endDate != ''">
+                and log_time &lt;= #{endDate,jdbcType=VARCHAR}
+            </if>
+            <if test="orgName != null and orgName != ''">
+                and o.org_name = #{orgName,jdbcType=VARCHAR}
+            </if>
+            <if test="roleName != null and roleName != ''">
+                and rol.role_name = #{roleName,jdbcType=VARCHAR}
+            </if>
+
+            <choose>
+                <when test='errCode=="0"'>
+                    and err_code = 0
+                </when>
+                <when test='errCode=="999999"'>
+                    and err_code !=0
+                </when>
+                <otherwise>
+                    and err_code = #{errCode,jdbcType=NUMERIC}
+                </otherwise>
+            </choose>
+        </where>
+    </sql>
+
+    <!--
+        FROM_UNIXTIME(end_time/1000,'%Y-%m-%d %H:%i:%s')
+     -->
+
+    <sql id="orderby">
+		order by log_time desc
+	</sql>
+
+    <!-- Batch write -->
+    <insert id="insert" parameterType="hashmap">
+        insert into ${table} (
+        service_id, op_id, tran_type, code, name, err_code, err_msg, ex, start_time, end_time, run_time, remote_addr,
+        local_addr, login_id, ext1, ext2, ext3, ext4, ext5, log_time
+        ) values
+        <foreach collection="list" item="item" index="index" separator=",">
+            (
+            #{item.serviceId, 			jdbcType=VARCHAR},
+            #{item.opId, 					jdbcType=VARCHAR},
+            #{item.tranType, 				jdbcType=VARCHAR},
+            #{item.code, 					jdbcType=VARCHAR},
+            #{item.name, 					jdbcType=VARCHAR},
+            #{item.errCode, 				jdbcType=NUMERIC},
+            #{item.errMsg, 				jdbcType=VARCHAR},
+            #{item.ex, 					jdbcType=VARCHAR},
+            #{item.startTime, 			jdbcType=NUMERIC},
+            #{item.endTime, 				jdbcType=NUMERIC},
+            #{item.runTime, 				jdbcType=NUMERIC},
+            #{item.remoteAddr, 			jdbcType=VARCHAR},
+            #{item.localAddr, 			jdbcType=VARCHAR},
+            #{item.loginId, 				jdbcType=VARCHAR},
+            #{item.ext1, 					jdbcType=VARCHAR},
+            #{item.ext2, 					jdbcType=VARCHAR},
+            #{item.ext3, 					jdbcType=VARCHAR},
+            #{item.ext4, 					jdbcType=VARCHAR},
+            #{item.ext5, 					jdbcType=VARCHAR},
+            now()
+            )
+        </foreach>
+    </insert>
+
+    <!-- Check if the log table exists -->
+    <select id="checkTable" parameterType="hashmap" resultType="int">
+		SELECT COUNT(*) FROM USER_TABLES 
+		WHERE TABLE_NAME =#{tableName, jdbcType=VARCHAR}
+	</select>
+
+    <!-- Create a logger table by task -->
+    <update id="createTable" parameterType="cn.newstrength.logger.obj.Sql">
+		${sql}
+	</update>
+
+
+    <select id="queryTableDate" resultType="string">
+		SELECT REPLACE(TABLE_NAME,'TBL_NSMS_LOGGER_','') FROM USER_TABLES 
+		WHERE TABLE_NAME LIKE CONCAT('TBL_NSMS_LOGGER','%')
+	</select>
+
+    <select id="query" parameterType="hashmap" resultMap="resultMap">
+        SELECT
+        <include refid="columns"/>
+        FROM TBL_WIDM_USER U
+        JOIN TBL_WIDM_ORG O ON U.ORG_ID = O.ORG_ID
+        JOIN TBL_WIDM_USERS_ROLES UR ON U.USER_ID = UR.USER_ID
+        JOIN TBL_WIDM_ROLE ROL ON ROL.ROLE_ID = UR.ROLE_ID
+        RIGHT JOIN TBL_NSMS_LOGGER_${tableDate} LOGG ON LOGG.LOGIN_ID = U.USER_CODE
+        <include refid="conditions"/>
+        union
+        SELECT
+        <include refid="columns"/>
+        FROM TBL_WIDM_USER U
+        JOIN TBL_WIDM_ORG O ON U.ORG_ID = O.ORG_ID
+        JOIN TBL_WIDM_USERS_ROLES UR ON U.USER_ID = UR.USER_ID
+        JOIN TBL_WIDM_ROLE ROL ON ROL.ROLE_ID = UR.ROLE_ID
+        RIGHT JOIN TBL_NSMS_LOGGER_${MonthMinus1} LOGG ON LOGG.LOGIN_ID = U.USER_CODE
+        <include refid="conditions"/>
+        union
+        SELECT
+        <include refid="columns"/>
+        FROM TBL_WIDM_USER U
+        JOIN TBL_WIDM_ORG O ON U.ORG_ID = O.ORG_ID
+        JOIN TBL_WIDM_USERS_ROLES UR ON U.USER_ID = UR.USER_ID
+        JOIN TBL_WIDM_ROLE ROL ON ROL.ROLE_ID = UR.ROLE_ID
+        RIGHT JOIN TBL_NSMS_LOGGER_${MonthMinus2} LOGG ON LOGG.LOGIN_ID = U.USER_CODE
+        <include refid="conditions"/>
+        union
+        SELECT
+        <include refid="columns"/>
+        FROM TBL_WIDM_USER U
+        JOIN TBL_WIDM_ORG O ON U.ORG_ID = O.ORG_ID
+        JOIN TBL_WIDM_USERS_ROLES UR ON U.USER_ID = UR.USER_ID
+        JOIN TBL_WIDM_ROLE ROL ON ROL.ROLE_ID = UR.ROLE_ID
+        RIGHT JOIN TBL_NSMS_LOGGER_${MonthMinus3} LOGG ON LOGG.LOGIN_ID = U.USER_CODE
+        <include refid="conditions"/>
+        union
+        SELECT
+        <include refid="columns"/>
+        FROM TBL_WIDM_USER U
+        JOIN TBL_WIDM_ORG O ON U.ORG_ID = O.ORG_ID
+        JOIN TBL_WIDM_USERS_ROLES UR ON U.USER_ID = UR.USER_ID
+        JOIN TBL_WIDM_ROLE ROL ON ROL.ROLE_ID = UR.ROLE_ID
+        RIGHT JOIN TBL_NSMS_LOGGER_${MonthMinus4} LOGG ON LOGG.LOGIN_ID = U.USER_CODE
+        <include refid="conditions"/>
+        union
+        SELECT
+        <include refid="columns"/>
+        FROM TBL_WIDM_USER U
+        JOIN TBL_WIDM_ORG O ON U.ORG_ID = O.ORG_ID
+        JOIN TBL_WIDM_USERS_ROLES UR ON U.USER_ID = UR.USER_ID
+        JOIN TBL_WIDM_ROLE ROL ON ROL.ROLE_ID = UR.ROLE_ID
+        RIGHT JOIN TBL_NSMS_LOGGER_${MonthMinus5} LOGG ON LOGG.LOGIN_ID = U.USER_CODE
+        <include refid="conditions"/>
+
+        <include refid="orderby"/>
+    </select>
+</mapper>
+
+
+
+

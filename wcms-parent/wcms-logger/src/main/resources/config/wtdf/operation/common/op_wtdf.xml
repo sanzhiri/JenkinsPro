@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE operation-cfg PUBLIC "-//PAI//DTD OPERATIONS//CN" "http://wtdf.newstrength.cn/wtdf/wtdf-operations-3.0.dtd">
+<!-- 
+	产品公共Step配置，项目组请勿修改
+	@Add by Xd
+-->
+<operation-cfg>
+	<opstep-def id="QueryStep" full-class="cn.newstrength.logger.wcms.step.QueryStep" />
+</operation-cfg>
+
+
+
+
+
+

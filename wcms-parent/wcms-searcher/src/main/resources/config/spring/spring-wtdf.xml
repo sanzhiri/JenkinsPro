@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="
+		http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-4.3.xsd">
+	
+	<!-- Operation 服务配置 -->
+	<bean id="operationService" class="cn.newstrength.wtdf.web.processor.Operation" scope="prototype"></bean>
+	
+	<!-- 系统配置 -->
+	<bean id="Data" class="cn.newstrength.wtdf.web.databus.DataParser" init-method="doParser">
+		<property name="files">
+			<list>
+				<value>classpath:/config/wtdf/datacontext/data_common.xml</value>
+			</list>
+		</property>
+	</bean>
+	
+	<!-- 开发人员配置 -->
+	<bean id="Operation" class="cn.newstrength.wtdf.web.processor.OperationParser" init-method="doParser">
+		<property name="files">
+			<list>
+				<value>classpath:/config/wtdf/operation/wcms/op_searcher.xml</value>
+			</list>
+		</property>
+	</bean>
+</beans>  

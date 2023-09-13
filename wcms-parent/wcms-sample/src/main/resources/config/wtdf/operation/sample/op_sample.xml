@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE operation-cfg PUBLIC "-//PAI//DTD OPERATIONS//CN" "http://wtdf.newstrength.cn/wtdf/wtdf-operations-3.0.dtd">
+
+<operation-cfg>
+
+	<operation id="/site/list" name="站点查询"   type="api">
+		<context>
+			<Record name="input">
+					<boolean name="haha">true</boolean>
+			</Record>
+		</context>
+		<step id="ver" on0Target="return" onOtherTarget="error" full-class="cn.newstrength.wcms.sample.site.step.SampleStep">
+			<context>
+				<string name="mapSet">input</string>
+				<string name="resource">fe.sample.ver</string>
+			</context>
+		</step>
+	</operation>
+	
+</operation-cfg>

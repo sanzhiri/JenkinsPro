@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  ~ Copyright (c) 2020, NewStrength. All rights reserved.
+  -->
+<!DOCTYPE operation-cfg PUBLIC "-//PAI//DTD OPERATIONS//CN" "http://wtdf.newstrength.cn/wtdf/wtdf-operations-3.0.dtd">
+<operation-cfg>
+    <!-- 站点列表 - 暂时关闭
+    <operation id="/sites" name="[Api]查询站点列表" type="api" token="false">
+        <context>
+            <Record name="input">
+                <string name="appId" required="true" desc="应用id"/>
+            </Record>
+        </context>
+        <step id="querySitesStep" on0Target="return" onOtherTarget="error" class-ref="querySitesStep">
+            <context>
+                <string name="mapSet">input</string>
+            </context>
+        </step>
+    </operation>-->
+    <!-- 站点详情 -->
+    <operation id="/site" name="[Api]查询站点详情" type="api" token="true">
+        <context>
+            <Record name="input">
+                <string name="siteCode" required="true" desc="站点编码"/>
+                <string name="appId" required="true" desc="应用id"/>
+            </Record>
+        </context>
+        <step id="authStep" on0Target="next" onOtherTarget="error" class-ref="apiAuthStep">
+            <context>
+                <string name="mapSet">input</string>
+            </context>
+        </step>
+        <step id="querySiteStep" on0Target="return" onOtherTarget="error" class-ref="querySiteStep">
+            <context>
+                <string name="mapSet">input</string>
+            </context>
+        </step>
+    </operation>
+</operation-cfg>

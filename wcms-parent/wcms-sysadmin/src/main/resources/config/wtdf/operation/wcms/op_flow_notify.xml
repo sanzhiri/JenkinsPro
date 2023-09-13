@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  ~ Copyright (c) 2020, NewStrength. All rights reserved.
+  -->
+<!DOCTYPE operation-cfg PUBLIC "-//PAI//DTD OPERATIONS//CN" "http://wtdf.newstrength.cn/wtdf/wtdf-operations-3.0.dtd">
+<!-- 流程通知管理 -->
+<operation-cfg>
+    <!-- 流程完成后信息的操作,此api不需要token信息,提供给flow服务调用 -->
+    <operation id="/info/flow/notify" name="流程通知" type="api" token="false">
+        <context>
+            <Record name="input">
+                <long name="bizKey" required="true" desc="信息id"/>
+                <string name="loginId" required="true" desc="操作人"/>
+                <string name="action" required="true" desc="流程动作" filter="actionFilter"/>
+                <string name="flowStatus" required="true" desc="流程结果" filter="flowStatusFilter"/>
+                <string name="flowNextElement" required="true" desc="流程下一个节点类型"/>
+                <string name="flowApprovalResult" required="true" desc="流程审批结果"/>
+                <string name="flowApprovalComment" required="true" desc="流程审批意见"/>
+            </Record>
+        </context>
+        <step id="afterFlowStep" on0Target="return" onOtherTarget="error"
+              full-class="cn.newstrength.wcms.sysadmin.step.flow.InfoFlowNotifyStep">
+            <context>
+                <string name="mapSet">input</string>
+            </context>
+        </step>
+    </operation>
+    <!-- 流程完成后栏目的操作,此api不需要token信息,提供给flow服务调用 -->
+    <operation id="/channel/flow/notify" name="流程通知" type="api" token="false">
+        <context>
+            <Record name="input">
+                <long name="bizKey" required="true" desc="栏目id"/>
+                <string name="loginId" required="true" desc="操作人"/>
+                <string name="action" required="true" desc="流程动作" filter="actionFilter"/>
+                <string name="flowStatus" required="true" desc="流程结果" filter="flowStatusFilter"/>
+                <string name="flowNextElement" required="true" desc="流程下一个节点类型"/>
+                <string name="flowApprovalResult" required="true" desc="流程审批结果"/>
+                <string name="flowApprovalComment" required="true" desc="流程审批意见"/>
+            </Record>
+        </context>
+        <step id="afterFlowStep" on0Target="return" onOtherTarget="error"
+              full-class="cn.newstrength.wcms.sysadmin.step.flow.ChannelFlowNotifyStep">
+            <context>
+                <string name="mapSet">input</string>
+            </context>
+        </step>
+    </operation>    
+    <!-- 流程完成后栏目的操作,此api不需要token信息,提供给flow服务调用 -->
+    <operation id="/fs/flow/notify" name="流程通知" type="api" token="false">
+        <context>
+            <Record name="input">
+                <string name="bizKey" required="true" desc="资源id"/>
+                <string name="loginId" required="true" desc="操作人"/>
+                <string name="action" required="true" desc="流程动作" filter="actionFilter"/>
+                <string name="flowStatus" required="true" desc="流程结果" filter="flowStatusFilter"/>
+                <string name="flowNextElement" required="true" desc="流程下一个节点类型"/>
+                <string name="flowApprovalResult" required="true" desc="流程审批结果"/>
+                <string name="flowApprovalComment" required="true" desc="流程审批意见"/>
+            </Record>
+        </context>
+        <step id="afterFlowStep" on0Target="return" onOtherTarget="error"
+              full-class="cn.newstrength.wcms.sysadmin.step.flow.FsFlowNotifyStep">
+            <context>
+                <string name="mapSet">input</string>
+            </context>
+        </step>
+    </operation>    
+</operation-cfg>

@@ -1,0 +1,106 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE operation-cfg PUBLIC "-//PAI//DTD OPERATIONS//CN" "http://wtdf.newstrength.cn/wtdf/wtdf-operations-3.0.dtd">
+<operation-cfg>
+
+	<operation id="/table/list" name="受控表列表" type="api" token="true">
+		<context>
+			<Record name="input">
+				<string name="name" desc="表说明"/>
+				<string name="code" desc="表名"/>
+				<string name="alias" desc="别名"/>
+			</Record>
+		</context>
+		<step id="step1" on0Target="return" onOtherTarget="error" class-ref="QueryForListStep">
+			<context>
+				<string name="mapSet">input</string>
+				<string name="resource">widm.table.list</string>
+			</context>
+		</step>
+	</operation>
+		
+	<operation id="/table/getById" name="受控表详情接口" type="api" token="true">
+		<context>
+			<Record name="input">
+				<int name="id" required="true" desc="ID" />
+			</Record>
+		</context>
+		<step id="step1" on0Target="return" onOtherTarget="error" class-ref="QueryForObjectStep">
+			<context>
+				<string name="mapSet">input</string>
+				<string name="resource">widm.table.getById</string>
+			</context>
+		</step>
+	</operation>
+	
+	<operation id="/table/create" name="受控表创建接口" type="api" token="true">
+		<context>
+			<Record name="input">
+				<string name="name" required="true" desc="表说明"/>
+				<string name="code" required="true" desc="表名"/>
+				<string name="alias" required="true" desc="别名"/>
+				<string name="funcCode" required="true" desc="功能编码"/>
+				<string name="remark" desc="备注" />
+			</Record>
+		</context>
+		<step id="step0" on0Target="step1" onOtherTarget="error" class-ref="CheckByCountStep">
+			<context>
+				<string name="mapSet">input</string>
+				<string name="alert">表名与功能授权码已有定义，请重新填写.</string>
+				<string name="resource">widm.table.check</string>
+			</context>
+		</step>
+		<step id="step1" on0Target="return" onOtherTarget="error" full-class="cn.newstrength.widm.step.table.CreateStep">
+			<context>
+				<string name="mapSet">input</string>
+				<string name="resource">widm.table.create</string>
+			</context>
+		</step>
+	</operation>
+
+	<operation id="/table/update" name="受控表更新接口" type="api" token="true">
+		<context>
+			<Record name="input">
+				<int name="id" required="true" desc="ID" />
+				<string name="name" desc="表说明"/>
+				<string name="code" required="true" desc="表名"/>
+				<string name="alias" desc="别名"/>
+				<string name="funcCode" required="true" desc="功能授权码"/>
+				<string name="remark" desc="备注" />
+			</Record>
+		</context>
+		<step id="step0" on0Target="step1" onOtherTarget="error" class-ref="CheckByCountStep">
+			<context>
+				<string name="mapSet">input</string>
+				<string name="alert">表名与功能授权码已有定义，请重新填写.</string>
+				<string name="resource">widm.table.check</string>
+			</context>
+		</step>
+		<step id="step1" on0Target="return" onOtherTarget="error" class-ref="UpdateStep">
+			<context>
+				<string name="mapSet">input</string>
+				<string name="resource">widm.table.update</string>
+			</context>
+		</step>
+	</operation>
+			
+	<operation id="/table/deleteById" name="受控表删除接口" type="api" token="true">
+		<context>
+			<Record name="input">
+				<int name="id" required="true" desc="ID" />
+			</Record>
+		</context>
+		<step id="step0" on0Target="step1" onOtherTarget="error" class-ref="CheckByCountStep">
+			<context>
+				<string name="mapSet">input</string>
+				<string name="alert">您要删除的表已有角色关联关系，请首先解除关系后在删除.</string>
+				<string name="resource">widm.acl.data.checkByTableId</string>
+			</context>
+		</step>
+		<step id="step1" on0Target="return" onOtherTarget="error" full-class="cn.newstrength.widm.step.table.DeleteByIdStep">
+			<context>
+				<string name="mapSet">input</string>
+				<string name="resource">widm.table.deleteById</string>
+			</context>
+		</step>
+	</operation>	
+</operation-cfg>

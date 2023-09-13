@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE operation-cfg PUBLIC "-//PAI//DTD OPERATIONS//CN" "http://wtdf.newstrength.cn/wtdf/wtdf-operations-3.0.dtd">
+<!-- 
+	用于接口测试
+	@Add by Xd
+-->
+<operation-cfg>
+	<!-- 获取Operation配置定义 -->
+	<operation id="/wtdf/operation/list" name="Get operations" type="api" token="true">
+		<step id="step1" on0Target="return" onOtherTarget="error" class-ref="GetOperationsStep"/>	
+	</operation>
+	
+	<!-- 获取Operation配置详情 -->
+	<operation id="/wtdf/operation/detail" name="Get operation" type="api" token="true">
+		<context>
+			<Record name="input">
+				<string name="opId" required="true" desc="接口Id"/>
+			</Record>
+		</context>	
+		<step id="step1" on0Target="return" onOtherTarget="error" class-ref="GetOperationStep">
+			<context>
+				<string name="mapSet">input</string>
+			</context>				
+		</step>
+	</operation>
+	
+	<!-- 获取Operation配置详情 -->
+	<operation id="/wtdf/operation/testing" name="Get operation" type="api" token="true">
+		<context>
+			<Record name="input">
+				<string name="serviceId" required="true" desc="服务名"/>
+				<string name="opId" required="true" desc="接口Id"/>
+			</Record>
+		</context>	
+		<step id="step1" on0Target="return" onOtherTarget="error" class-ref="GetOperationStep">
+			<context>
+				<string name="mapSet">input</string>
+			</context>				
+		</step>
+	</operation>
+</operation-cfg>
+
+
+
+
+
+

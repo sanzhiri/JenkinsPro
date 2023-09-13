@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="cn.newstrength.logger.mapper.OrgRole">
+
+   <resultMap type="cn.newstrength.logger.wcms.audit.org.OrgEntity" id="orgMap"  >
+		<result property="orgName" column="org_name"/>
+	</resultMap >
+
+	<select id="orgQuery" resultMap="orgMap">
+		select distinct(org_name) from TBL_WIDM_ORG
+	</select>
+
+	<resultMap type="cn.newstrength.logger.wcms.audit.role.RoleEntity" id="roleMap"  >
+		<result property="roleName" column="role_name"/>
+	</resultMap >
+
+	<select id="roleQuery" resultMap="roleMap">
+		select distinct(role_name) from TBL_WIDM_ROLE
+	</select>
+
+</mapper>
+
+
+
+

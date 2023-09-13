@@ -1,0 +1,133 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE operation-cfg PUBLIC "-//PAI//DTD OPERATIONS//CN" "http://wtdf.newstrength.cn/wtdf/wtdf-operations-3.0.dtd">
+<operation-cfg>
+	<!-- 
+		静态资源文件
+	 -->
+	<operation id="/fs/static/ls" name="静态资源" type="api" token="true">
+		<context>
+			<Record name="input">
+				<string name="path" desc="文件地址" />
+				<string name="hidden" desc="是否显示隐藏文件" />
+				<string name="site_id" desc="站点Id" />
+				<int name="currentPage" desc="当前页"/>
+				<int name="pageSize" desc="总条数"/>
+			</Record>
+		</context>
+		<step id="ls" on0Target="return" onOtherTarget="error" full-class="cn.newstrength.wcms.sysadmin.step.fs.LSStep">
+			<context>
+				<string name="mapSet">input</string>
+				<string name="resource">wcms.static.resource.directory</string>
+			</context>
+		</step>
+	</operation>
+	
+	<operation id="/fs/static/mkdirs" name="创建文件夹" type="api" token="true">
+		<context>
+			<Record name="input">
+				<string name="path" desc="文件夹"  required="true"/>
+				<string name="site_id" desc="站点Id" />
+			</Record>
+		</context>
+		<step id="ls" on0Target="return" onOtherTarget="error" full-class="cn.newstrength.wcms.sysadmin.step.fs.CreateFolderStep">
+			<context>
+				<string name="mapSet">input</string>
+				<string name="resource">wcms.static.resource.directory</string>
+			</context>
+		</step>
+	</operation>
+	
+	<operation id="/fs/static/delete/quietly" name="创建文件夹" type="api" token="true">
+		<context>
+			<Record name="input">
+				<string name="id" desc="文件id" required="true"/>
+				<string name="site_id" desc="站点Id" />
+			</Record>
+		</context>
+		<step id="ls" on0Target="return" onOtherTarget="error" full-class="cn.newstrength.wcms.sysadmin.step.fs.DeleteQuietlyStep">
+			<context>
+				<string name="mapSet">input</string>
+				<string name="resource">wcms.static.resource.directory</string>
+			</context>
+		</step>
+	</operation>
+	
+	<operation id="/fs/static/upload" name="文件上传" type="api" token="true">
+		<context>
+			<Record name="input">
+				<string name="path" desc="文件路径" required="true"/>
+				<string name="site_id" desc="站点Id" />
+				<string name="sign" desc="解压标记"/>
+			</Record>
+		</context>
+		<step id="ls" on0Target="return" onOtherTarget="error" full-class="cn.newstrength.wcms.sysadmin.step.fs.UploadStep">
+			<context>
+				<string name="mapSet">input</string>
+				<string name="extensions">zip,js,css,html,htm,gif,jpg,jpeg,png,svg,properties,yml,xml,txt</string>
+				<string name="resource">wcms.static.resource.directory</string>
+			</context>
+		</step>
+	</operation>
+	
+	<operation id="/fs/static/download" name="文件下载" type="api" token="true">
+		<context>
+			<Record name="input">
+				<string name="path" desc="文件路径" required="true"/>
+				<string name="site_id" desc="站点Id" />
+			</Record>
+		</context>
+		<step id="download" on0Target="return" onOtherTarget="error" full-class="cn.newstrength.wcms.sysadmin.step.fs.DownloadStep">
+			<context>
+				<string name="mapSet">input</string>
+				<string name="resource">wcms.static.resource.directory</string>
+			</context>
+		</step>
+	</operation>
+	
+	<operation id="/fs/static/preview" name="资源文件预览" type="api" token="true">
+		<context>
+			<Record name="input">
+				<string name="path" desc="文件路径" required="true"/>
+				<string name="site_id" desc="站点Id" />
+			</Record>
+		</context>
+		<step id="download" on0Target="return" onOtherTarget="error" full-class="cn.newstrength.wcms.sysadmin.step.fs.PreviewStep">
+			<context>
+				<string name="mapSet">input</string>
+				<string name="extensions">js,css,html,htm,properties,yml,xml,txt</string>
+				<string name="resource">wcms.static.resource.directory</string>
+			</context>
+		</step>
+	</operation>
+	
+	<operation id="/fs/static/save" name="保存资源文件" type="api" token="true">
+		<context>
+			<Record name="input">
+				<string name="path" desc="文件路径" required="true"/>
+				<string name="content" desc="文件内容" required="true"/>
+				<string name="site_id" desc="站点Id" />
+			</Record>
+		</context>
+		<step id="download" on0Target="return" onOtherTarget="error" full-class="cn.newstrength.wcms.sysadmin.step.fs.SaveStep">
+			<context>
+				<string name="mapSet">input</string>
+				<string name="extensions">js,css,html,htm,properties,yml,xml,txt</string>
+				<string name="resource">wcms.static.resource.directory</string>
+			</context>
+		</step>
+	</operation>
+	
+	<operation id="/fs/info" name="文件详情" type="api" token="true">
+		<context>
+			<Record name="input">
+				<string name="id" desc="文件id" required="true"/>
+			</Record>
+		</context>
+		<step id="download" on0Target="return" onOtherTarget="error" full-class="cn.newstrength.wcms.sysadmin.step.fs.QueryForFlowStep">
+			<context>
+				<string name="mapSet">input</string>
+			</context>
+		</step>
+	</operation>
+	
+</operation-cfg>

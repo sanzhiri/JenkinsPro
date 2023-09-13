@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE data PUBLIC "-//PAI//DTD OPERATIONS//CN"	"http://wtdf.newstrength.cn/wtdf/wtdf-operations-3.0.dtd">
+<data>
+	<!-- 登录用户的信息，请根据应用需求进行调整 -->
+	<Record name="session_user">
+		<string name="username" />
+		<string name="realname" />
+		<string name="password" />
+		<string name="level" />
+		<object name="user"/>
+	</Record>
+</data>

@@ -1,0 +1,127 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE operation-cfg PUBLIC "-//PAI//DTD OPERATIONS//CN" "http://wtdf.newstrength.cn/wtdf/wtdf-operations-3.0.dtd">
+<operation-cfg>
+
+	<operation id="/acl/org/tree" name="组织机构树" type="api" token="true">
+		<step id="acl" on0Target="query" onOtherTarget="error" class-ref="AclRowFilterStep">
+			<context>
+				<string name="resource">AUTH_ORG</string>
+			</context>
+		</step>
+		<step id="query" on0Target="return" onOtherTarget="error" class-ref="QueryForListStep">
+			<context>
+				<string name="resource">widm.org.queryTree</string>
+			</context>
+		</step>
+	</operation>
+	
+	<operation id="/org/tree" name="机构树查询" type="api" token="true">
+		<context>
+			<Record name="input">
+				<int name="parentId" desc="父节点"/>
+			</Record>
+		</context>
+		<step id="query" on0Target="return" onOtherTarget="error" class-ref="QueryTreeStep">
+			<context>
+				<string name="mapSet">input</string>
+				<string name="resource">widm.org.queryTree</string>
+			</context>
+		</step>
+	</operation>
+
+	<operation id="/org/children" name="子节点数据" type="api" token="true">
+		<context>
+			<Record name="input">
+				<int name="parentId" required="true" desc="上级机构ID" />
+			</Record>
+		</context>
+		<step id="step1" on0Target="return" onOtherTarget="error" class-ref="QueryForListStep">
+			<context>
+				<string name="mapSet">input</string>
+				<string name="resource">widm.org.queryChildren</string>
+			</context>
+		</step>
+	</operation>
+		
+	<operation id="/org/getById" name="机构详情接口" type="api" token="true">
+		<context>
+			<Record name="input">
+				<int name="orgId" required="true" desc="机构ID" />
+			</Record>
+		</context>
+		<step id="step1" on0Target="return" onOtherTarget="error" class-ref="QueryForObjectStep">
+			<context>
+				<string name="mapSet">input</string>
+				<string name="resource">widm.org.getById</string>
+			</context>
+		</step>
+	</operation>
+	
+	<operation id="/org/create" name="机构创建接口" type="api" token="true">
+		<context>
+			<Record name="input">
+				<int name="orgParentId" required="true" desc="上级机构" />
+				<string name="orgCode" required="true" desc="机构编码"/>
+				<string name="orgName" required="true" desc="机构名称"/>
+				<string name="remark" desc="备注" />
+			</Record>
+		</context>
+		<step id="step0" on0Target="step1" onOtherTarget="error" class-ref="CheckByCountStep">
+			<context>
+				<string name="mapSet">input</string>
+				<string name="alert">机构编码重复，请重新填写.</string>
+				<string name="resource">widm.org.checkCode</string>
+			</context>
+		</step>
+		<step id="step1" on0Target="return" onOtherTarget="error" full-class="cn.newstrength.widm.step.org.CreateStep">
+			<context>
+				<string name="mapSet">input</string>
+				<string name="resource">widm.org.create</string>
+			</context>
+		</step>
+	</operation>
+
+	<operation id="/org/update" name="机构更新接口" type="api" token="true">
+		<context>
+			<Record name="input">
+				<int name="orgId" required="true" desc="机构ID" />
+				<string name="orgName" desc="机构名称"/>
+				<string name="remark" desc="备注" />
+			</Record>
+		</context>
+		<step id="step1" on0Target="return" onOtherTarget="error" full-class="cn.newstrength.widm.step.org.UpdateStep">
+			<context>
+				<string name="mapSet">input</string>
+				<string name="resource">widm.org.update</string>
+			</context>
+		</step>
+	</operation>
+			
+	<operation id="/org/deleteById" name="机构删除接口" type="api" token="true">
+		<context>
+			<Record name="input">
+				<int name="orgId" required="true" desc="机构ID" />
+			</Record>
+		</context>
+		<step id="step0" on0Target="step1" onOtherTarget="error" class-ref="CheckByCountStep">
+			<context>
+				<string name="mapSet">input</string>
+				<string name="alert">请首先移除子节点数据.</string>
+				<string name="resource">widm.org.count-children</string>
+			</context>
+		</step>
+		<step id="step1" on0Target="step2" onOtherTarget="error" class-ref="CheckByCountStep">
+			<context>
+				<string name="mapSet">input</string>
+				<string name="alert">请首先移除机构下用户数据.</string>
+				<string name="resource">widm.user.count-org-user</string>
+			</context>
+		</step>
+		<step id="step2" on0Target="return" onOtherTarget="error" class-ref="DeleteStep">
+			<context>
+				<string name="mapSet">input</string>
+				<string name="resource">widm.org.deleteById</string>
+			</context>
+		</step>
+	</operation>	
+</operation-cfg>

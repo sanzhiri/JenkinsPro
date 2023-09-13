@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="
+		http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-4.3.xsd">
+	
+	<!-- 国际化配置 -->
+	<bean id="messageSource" class="org.springframework.context.support.ReloadableResourceBundleMessageSource">
+		<property name="basenames">
+			<list>
+				<value>classpath:config/i18n/nsms/messages</value>
+				<value>classpath:config/i18n/logger/messages</value>
+			</list>
+		</property>
+		<property name="defaultEncoding" value="utf-8" />
+		<!-- 如果实时读取，此处修改为0，不推荐 -->
+		<property name="cacheSeconds" value="3600" />
+	</bean>		
+</beans>  

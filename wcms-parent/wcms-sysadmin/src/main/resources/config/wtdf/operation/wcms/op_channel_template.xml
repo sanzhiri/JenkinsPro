@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE operation-cfg PUBLIC "-//PAI//DTD OPERATIONS//CN" "http://wtdf.newstrength.cn/wtdf/wtdf-operations-3.0.dtd">
+<operation-cfg>
+
+
+	<operation id="/channeltemplate/update" name="WcmsChannelTemplate更新接口" type="api" token="true">
+		<context>
+			<Record name="input">
+					<int name="channelId" required="true" desc="栏目ID"/>
+					<string name="indexJson" required="true" desc="首页模板json"/>
+					<string name="listJson" required="true" desc="列表模板json"/>
+					<string name="infoJson" required="true" desc="信息模板json"/>
+					<string name="indexType" required="true" desc="首页模板Type"/><!-- 1继承父频道，2自定义 3,不设置 -->
+					<string name="listType" required="true" desc="列表模板Type"/>
+					<string name="infoType" required="true" desc="信息模板Type"/>
+					<string name="otherJson"  desc="其它模板json"/>
+					
+			</Record>
+		</context>
+	    <step id="step1" on0Target="next" onOtherTarget="error" full-class="cn.newstrength.wcms.sysadmin.step.channelTemplate.UpdateChannelTemplateStep">
+	     <context>
+			<string name="mapSet">input</string>
+			<string name="resource">wcmsChannelTemplate.update</string>
+	     </context>
+	    </step>   
+	</operation>
+	
+	<operation id="/channeltemplate/getByChannelInfo" name="查询ChannelTemplate清单" type="api" token="true">
+		<context>
+			<Record name="input">
+				<int name="channelId" required="true" desc="栏目ID"/>
+				<string name="templateTypes"  desc="模板类型">index,list,info,other</string>
+			</Record>
+		</context>
+		<step id="step1"  on0Target="return" onOtherTarget="error" full-class="cn.newstrength.wcms.sysadmin.step.channelTemplate.QueryChannelTemplateStep">
+			<context>
+				<string name="mapSet">input</string>
+				<string name="resource">wcms.channel.template.getByChannelANDType</string>
+			</context>
+		</step>
+	</operation>
+</operation-cfg>

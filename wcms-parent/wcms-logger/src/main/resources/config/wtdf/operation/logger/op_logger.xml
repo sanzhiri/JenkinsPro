@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE operation-cfg PUBLIC "-//PAI//DTD OPERATIONS//CN" "http://wtdf.newstrength.cn/wtdf/wtdf-operations-3.0.dtd">
+
+<operation-cfg>
+
+	<operation id="/query" name="日志查询" type="api" token="false">
+		<context>
+			<Input name="input">
+				<string name="logType" desc="01 操作日志 02 异常日志">01</string>
+				<string name="loginId" desc="操作人"/>
+				<string name="description" desc="描述"/>
+				<string name="startDate" desc="开始时间"/>
+				<string name="endDate" desc="结束时间"/>
+				<int name="errCode" desc="错误代码"/>
+				<string name="errMsg" desc="错误描述"/>
+				<int name="pageSize" desc="每页显示">10</int>
+				<int name="currentPage" required="true" desc="当前页"/>
+				<string name="orgName" desc="机构名称"/>
+				<string name="roleName" desc="角色名称"/>
+			</Input>
+		</context>
+		<step id="ver" on0Target="return" onOtherTarget="error" class-ref="QueryStep">
+			<context>
+				<string name="mapSet">input</string>
+				<string name="resource">cn.newstrength.nsms.logger.LoggerMapper.query</string>
+			</context>
+		</step>
+	</operation>
+	
+</operation-cfg>

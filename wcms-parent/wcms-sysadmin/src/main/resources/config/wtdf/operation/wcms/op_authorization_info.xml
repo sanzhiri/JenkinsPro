@@ -1,0 +1,98 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  ~ Copyright (c) 2020, NewStrength. All rights reserved.
+  -->
+<!-- open api 授权管理 -->
+<!DOCTYPE operation-cfg PUBLIC "-//PAI//DTD OPERATIONS//CN" "http://wtdf.newstrength.cn/wtdf/wtdf-operations-3.0.dtd">
+<operation-cfg>
+    <operation id="/authorization/create" name="添加授权信息" token="true" type="api">
+        <context>
+            <Record name="input">
+                <string name="appName" required="true" desc="应用名称"/>
+                <string name="appId" required="true" desc="应用id"/>
+                <string name="expireTime" required="true" desc="到期时间"/>
+                <string name="domain" required="true" desc="域名"/>
+                <string name="authInfos" required="true" desc="授权信息"/>
+            </Record>
+        </context>
+        <step id="addAuthorizationStep" on0Target="return" onOtherTarget="error"
+              full-class="cn.newstrength.wcms.sysadmin.openapi.step.AddAuthorizationStep">
+            <context>
+                <string name="mapSet">input</string>
+            </context>
+        </step>
+    </operation>
+    <!--删除授权信息-->
+    <operation id="/authorization/delete" name="删除授权信息" token="true" type="api">
+        <context>
+            <Record name="input">
+                <int name="id" required="true" desc="信息id"/>
+            </Record>
+        </context>
+        <step id="deleteAuthorization" on0Target="return" onOtherTarget="error"
+              full-class="cn.newstrength.wcms.sysadmin.openapi.step.DeleteAuthorizationStep">
+            <context>
+                <string name="mapSet">input</string>
+            </context>
+        </step>
+    </operation>
+    <!--启用授权信息-->
+    <operation id="/authorization/enable" name="启用授权信息" token="true" type="api">
+        <context>
+            <Record name="input">
+                <int name="id" required="true" desc="信息id"/>
+            </Record>
+        </context>
+        <step id="enableAuthorization" on0Target="return" onOtherTarget="error"
+              full-class="cn.newstrength.wcms.sysadmin.openapi.step.EnableAuthorizationStep">
+            <context>
+                <string name="mapSet">input</string>
+            </context>
+        </step>
+    </operation>
+    <!--停用授权信息-->
+    <operation id="/authorization/disable" name="停用授权信息" token="true" type="api">
+        <context>
+            <Record name="input">
+                <int name="id" required="true" desc="信息id"/>
+            </Record>
+        </context>
+        <step id="disableAuthorization" on0Target="return" onOtherTarget="error"
+              full-class="cn.newstrength.wcms.sysadmin.openapi.step.DisableAuthorizationStep">
+            <context>
+                <string name="mapSet">input</string>
+            </context>
+        </step>
+    </operation>
+    <!--授权信息列表-->
+    <operation id="/authorization/list" name="授权信息列表" token="true" type="api">
+        <context>
+            <Record name="input">
+                <int name="appName" required="false" desc="应用名称"/>
+            </Record>
+        </context>
+        <step id="disableAuthorization" on0Target="return" onOtherTarget="error"
+              full-class="cn.newstrength.wcms.sysadmin.openapi.step.ListAuthorizationStep">
+            <context>
+                <string name="mapSet">input</string>
+            </context>
+        </step>
+    </operation>
+    <!--授权信息修改-->
+    <operation id="/authorization/update" name="授权信息修改" token="true" type="api">
+        <context>
+            <Record name="input">
+                <int name="id" required="true" desc="信息id"/>
+                <string name="expireTime" required="true" desc="到期时间"/>
+                <string name="domain" required="true" desc="域名"/>
+                <string name="authInfos" required="true" desc="授权信息"/>
+            </Record>
+        </context>
+        <step id="editAuthorization" on0Target="return" onOtherTarget="error"
+              full-class="cn.newstrength.wcms.sysadmin.openapi.step.EditAuthorizationStep">
+            <context>
+                <string name="mapSet">input</string>
+            </context>
+        </step>
+    </operation>
+</operation-cfg>

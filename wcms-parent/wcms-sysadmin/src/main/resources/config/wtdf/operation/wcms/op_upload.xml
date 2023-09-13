@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE operation-cfg PUBLIC "-//PAI//DTD OPERATIONS//CN" "http://wtdf.newstrength.cn/wtdf/wtdf-operations-3.0.dtd">
+<operation-cfg>
+	
+	<!-- 
+		文件扩展名：extensions 可配置如下
+		* 表示不做文件类型的限制
+		txt,pdf 英文逗号分隔的字符串，表示允许上传的文件后缀
+	 -->
+	<operation id="/file/upload" name="文件上传" type="api" token="true">
+		<step id="upload" on0Target="return" onOtherTarget="error" class-ref="UploadStep">
+			<context>
+				<string name="extensions">zip,7z,txt,pdf,doc,docx,ppt,pptx,xls,xlsx,jpg,jpeg,png,gif</string>
+				<string name="platform" desc="平台">sysadmin</string>
+			</context>
+		</step>
+	</operation>
+	
+	
+</operation-cfg>

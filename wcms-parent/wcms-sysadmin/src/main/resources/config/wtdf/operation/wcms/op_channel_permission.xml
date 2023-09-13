@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE operation-cfg PUBLIC "-//PAI//DTD OPERATIONS//CN" "http://wtdf.newstrength.cn/wtdf/wtdf-operations-3.0.dtd">
+<operation-cfg>
+
+	<operation id="/channel/permission/tree" name="机构拥护树查询" type="api" token="true">
+		<context>
+			<Record name="input">
+				<int name="channelId" required="true" desc="频道ID" />
+			</Record>
+		</context>
+		<step id="query" on0Target="return" onOtherTarget="error" full-class="cn.newstrength.wcms.sysadmin.step.channelPermission.QueryTreeStep">
+			<context>
+				<string name="mapSet">input</string>
+				<string name="resource">wcms.channel.permission.queryTree</string>
+			</context>
+		</step>
+	</operation>
+
+
+	<operation id="/channel/permission/update" name="WcmsChannelPermission更新接口" type="api" token="true">
+		<context>
+			<Record name="input">
+				<int name="channelId" desc="频道ID"/>
+				<string name="permissionJson" required="true" desc="拥有者json"/>
+			</Record>
+		</context>
+	    <step id="step1" on0Target="next" onOtherTarget="error" full-class="cn.newstrength.wcms.sysadmin.step.channel.UpdateChannelPremStep">
+	     <context>
+			<string name="mapSet">input</string>
+	     </context>
+	    </step>   
+	</operation>
+
+</operation-cfg>

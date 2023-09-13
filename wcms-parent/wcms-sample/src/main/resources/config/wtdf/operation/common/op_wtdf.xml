@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE operation-cfg PUBLIC "-//PAI//DTD OPERATIONS//CN" "http://wtdf.newstrength.cn/wtdf/wtdf-operations-3.0.dtd">
+<!-- 
+	产品公共Step配置，项目组请勿修改
+	@Add by Xd
+-->
+<operation-cfg>
+	<!-- 插入Step -->
+	<opstep-def id="InsertStep" full-class="cn.newstrength.wtdf.web.opstep.InsertStep" />
+	<!-- 插入Step -->
+	<opstep-def id="CreateStep" full-class="cn.newstrength.wtdf.web.opstep.CreateStep" />
+	<!-- 更新Step -->
+	<opstep-def id="UpdateStep" full-class="cn.newstrength.wtdf.web.opstep.UpdateStep" />
+	<!-- 删除Step -->
+	<opstep-def id="DeleteStep" full-class="cn.newstrength.wtdf.web.opstep.DeleteStep" />
+	<!-- 删除多个Step -->
+	<opstep-def id="DeleteMultiStep" full-class="cn.newstrength.wtdf.web.opstep.DeleteMultiStep" />
+	<!-- 汇总Step -->
+	<opstep-def id="QueryForCountStep" full-class="cn.newstrength.wtdf.web.opstep.QueryForCountStep" />
+	<!-- 单结果查询Step -->
+	<opstep-def id="QueryForObjectStep" full-class="cn.newstrength.wtdf.web.opstep.QueryForObjectStep" />
+	<!-- 无分页查询 -->
+	<opstep-def id="QueryForListStep" full-class="cn.newstrength.wtdf.web.opstep.QueryForListStep" />
+	<!-- WTDF 文件上传 -->
+	<opstep-def id="UploadFileStep" full-class="cn.newstrength.wtdf.web.opstep.UploadFileStep" />
+	<!-- 分页查询 -->
+	<opstep-def id="QueryForListPageStep" full-class="cn.newstrength.wtdf.web.opstep.QueryForListPageStep" />
+	<!-- 服务调用 -->
+	<opstep-def id="RestTemplateStep" full-class="cn.newstrength.wtdf.web.opstep.RestTemplateStep" />
+	<!-- 数据依赖校验 -->
+	<opstep-def id="CheckByCountStep" full-class="cn.newstrength.wtdf.web.opstep.CheckByCountStep" />
+</operation-cfg>
+
+
+
+
+
+

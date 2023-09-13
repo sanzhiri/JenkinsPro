@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<actions>
+	<action id="/widm/sync" desc="Sync widm" token="true" beanId="widm/sync">
+		<args>
+			<arg name="type" title="同步类型"></arg>
+		</args>	
+	</action>
+</actions>

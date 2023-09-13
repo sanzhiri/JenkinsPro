@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE operation-cfg PUBLIC "-//PAI//DTD OPERATIONS//CN" "http://wtdf.newstrength.cn/wtdf/wtdf-operations-3.0.dtd">
+<!-- ES 全文检索 -->
+<operation-cfg>
+
+	<!-- 获取Operation配置详情 -->
+	<operation id="/searcher/info" name="信息全文检索" type="api" token="false">
+		<context>
+			<Record name="input">
+				<string name="searchKey"  desc="指定查询key"/>
+				<string name="searchText" required="true" desc="查询内容"/>
+				<string name="siteId" required="true" desc="查询站点"/>
+				<string name="pageSize"  desc="每页条数"/>
+				<string name="currentPage"  desc="查询页号"/>
+			</Record>
+		</context>	
+		<step id="step1" on0Target="return" onOtherTarget="error" full-class="cn.newstrength.wcms.step.QuerySearchderInfoStep">
+			<context>
+				<string name="mapSet">input</string>
+			</context>				
+		</step>
+	</operation>
+
+	<operation id="/searcher/index/initDoc" name="写入索引" type="api" token="false">
+		<context>
+			<Record name="input">
+			<string name="type"  desc="all" >all</string>
+			</Record>
+		</context>	
+		<step id="step1" on0Target="return" onOtherTarget="error" full-class="cn.newstrength.wcms.step.InitDocSearchderStep">
+			<context>
+				<string name="mapSet">input</string>
+			</context>				
+		</step>
+	</operation>
+
+	<operation id="/searcher/index/delDoc" name="删除Doc" type="api" token="false">
+		<context>
+			<Record name="input"></Record>
+		</context>	
+		<step id="step1" on0Target="return" onOtherTarget="error" full-class="cn.newstrength.wcms.step.DeleteDocStep">
+			<context>
+				<string name="mapSet">input</string>
+			</context>				
+		</step>
+	</operation>
+
+	<operation id="/searcher/index/create" name="创建索引" type="api" token="false">
+		<context>
+			<Record name="input"></Record>
+		</context>	
+		<step id="step1" on0Target="return" onOtherTarget="error" full-class="cn.newstrength.wcms.step.CreateIndexInfoStep">
+			<context>
+				<string name="mapSet">input</string>
+			</context>				
+		</step>
+	</operation>
+	
+	<operation id="/searcher/index/delete" name="删除索引" type="api" token="false">
+		<context>
+			<Record name="input"></Record>
+		</context>	
+		<step id="step1" on0Target="return" onOtherTarget="error" full-class="cn.newstrength.wcms.step.DeleteIndexInfoStep">
+			<context>
+				<string name="mapSet">input</string>
+			</context>				
+		</step>
+	</operation>
+   
+</operation-cfg>

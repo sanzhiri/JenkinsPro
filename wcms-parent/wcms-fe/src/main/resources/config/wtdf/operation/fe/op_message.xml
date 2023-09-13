@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE operation-cfg PUBLIC "-//PAI//DTD OPERATIONS//CN" "http://wtdf.newstrength.cn/wtdf/wtdf-operations-3.0.dtd">
+
+<operation-cfg>
+	<operation id="/message/add" name="留言提交" code="message-add" type="api">
+		<context>
+			<Input name="input">
+				<string name="name" required="true" desc="姓名"/>
+				<string name="tel" required="true" desc="电话"/>
+				<string name="message" required="true" desc="留言内容"/>
+			</Input>
+		</context>
+		<step id="ver" on0Target="return" onOtherTarget="error" class-ref="CreateStep">
+			<context>
+				<string name="mapSet">input</string>
+				<string name="resource">fe.message.add</string>
+			</context>
+		</step>
+	</operation>
+	
+	<operation id="/message/list" code="message-list" name="留言列表"  type="api" token="true">
+		<context>
+			<Input name="input">
+				<int name="currentPage" required="true">1</int>
+				<int name="pageSize">20</int>
+				<string name="name" desc="姓名"/>
+				<string name="tel" desc="电话"/>
+				<string name="message" desc="留言内容"/>
+			</Input>
+		</context>
+		<step id="queryForListPageStep" on0Target="return" onOtherTarget="error" class-ref="QueryForListPageStep">
+			<context>
+				<string name="mapSet">input</string>
+				<string name="resource">fe.message.list</string>
+			</context>
+		</step>		
+	</operation>	
+	
+	<operation id="/message/delete" code="message-delete" name="删除留言"  type="api" token="true">
+		<context>
+			<Input name="input">
+				<int name="id" required="true" desc="留言id"/>
+			</Input>
+		</context>
+		<step id="deleteStep" on0Target="return" onOtherTarget="error" class-ref="DeleteStep">
+			<context>
+				<string name="mapSet">input</string>
+				<string name="resource">fe.message.delete</string>
+			</context>
+		</step>		
+	</operation>
+</operation-cfg>

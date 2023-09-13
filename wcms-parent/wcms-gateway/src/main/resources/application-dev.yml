@@ -1,0 +1,101 @@
+#------------------------------------------------------------------------
+# Server port
+server:
+    port: 10001
+#------------------------------------------------------------------------   
+# Spring cloud      
+spring:
+  application:
+    name: wcms-gateway
+#------------------------------------------------------------------------
+#Redis
+  redis: 
+    host: localhost
+    port: 6379
+    jedis:
+      pool:
+        min-idle: 1
+        max-active: 100
+        max-idle: 5
+        max-wait: 1000
+    password: zhang
+  #------------------------------------------------------------------------
+#Nacos
+  cloud:
+    nacos:
+      discovery:
+        server-addr: http://localhost:8848
+        enabled: true
+        namespace: dev
+        group: dev
+        service: ${spring.application.name}
+    gateway: 
+      discovery:
+        locator:
+          enabled: true
+      routes:
+#------------------------------------------------------------------------
+#    WCMS-SYSADMIN
+#------------------------------------------------------------------------
+      - id: wcms_sysadmin_service_route
+        uri: lb://wcms-sysadmin
+        predicates:
+        - Path=/sysadmin/**
+        filters:
+        - StripPrefix=1
+#------------------------------------------------------------------------
+#    WCMS-FLOW
+#------------------------------------------------------------------------
+      - id: wcms_flow_service_route
+        uri: lb://wcms-flow
+        predicates:
+        - Path=/flow/**
+        filters:
+        - StripPrefix=1
+#------------------------------------------------------------------------
+#    WCMS-D2S
+#------------------------------------------------------------------------
+      - id: wcms_d2s_service_route
+        uri: lb://wcms-d2s
+        predicates:
+        - Path=/d2s/**
+        filters:
+        - StripPrefix=1
+#------------------------------------------------------------------------
+#    WCMS-LOGGER
+#------------------------------------------------------------------------
+      - id: wcms_logger_service_route
+        uri: lb://wcms-logger
+        predicates:
+        - Path=/logger/**
+        filters:
+        - StripPrefix=1
+#------------------------------------------------------------------------
+#    NSMS-WIDM
+#------------------------------------------------------------------------
+      - id: widm_service_route
+        uri: lb://nsms-widm
+        predicates:
+        - Path=/widm/**
+        filters:
+        - StripPrefix=1
+#------------------------------------------------------------------------
+# Actuator
+management:
+  endpoint:
+    gateway:
+      enabled: true
+  endpoints:
+    web:
+      exposure:
+        include: "*"
+#------------------------------------------------------------------------
+# JWT setting
+#------------------------------------------------------------------------
+jwt: 
+  redis: 
+    key: cn:newstrength:jwt # 应用jwt存储key前缀
+    renewal: true           # 是否开启jwt自动续约
+    ttl: 3600               # SECONDS,默认1小时jwt过期
+
+    

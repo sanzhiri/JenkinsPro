@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  ~ Copyright (c) 2020, NewStrength. All rights reserved.
+  -->
+<!DOCTYPE operation-cfg PUBLIC "-//PAI//DTD OPERATIONS//CN" "http://wtdf.newstrength.cn/wtdf/wtdf-operations-3.0.dtd">
+<operation-cfg>
+    <!-- 信息列表 -->
+    <operation id="/infos" name="[Api]查询信息列表" type="api" token="true">
+        <context>
+            <Record name="input">
+                <string name="siteCode" required="true" desc="站点编码"/>
+                <string name="channelCode" required="true" desc="栏目编码"/>
+                <int name="currentPage" required="false" desc="当前页">1</int>
+                <int name="pageSize" required="false" desc="每页条数">15</int>
+                <string name="appId" required="true" desc="应用id"/>
+            </Record>
+        </context>
+        <step id="authStep" on0Target="next" onOtherTarget="error" class-ref="apiAuthStep">
+            <context>
+                <string name="mapSet">input</string>
+            </context>
+        </step>
+        <step id="queryInfosStep" on0Target="return" onOtherTarget="error" class-ref="queryInfosStep">
+            <context>
+                <string name="mapSet">input</string>
+            </context>
+        </step>
+    </operation>
+    <!-- 信息详情 -->
+    <operation id="/info" name="[Api]查询信息详情" type="api" token="true">
+        <context>
+            <Record name="input">
+                <string name="siteCode" required="true" desc="站点编码"/>
+                <string name="channelCode" required="true" desc="栏目编码"/>
+                <int name="infoId" required="true" desc="信息id"/>
+                <string name="appId" required="true" desc="应用id"/>
+            </Record>
+        </context>
+        <step id="authStep" on0Target="next" onOtherTarget="error" class-ref="apiAuthStep">
+            <context>
+                <string name="mapSet">input</string>
+            </context>
+        </step>
+        <step id="queryInfoStep" on0Target="return" onOtherTarget="error" class-ref="queryInfoStep">
+            <context>
+                <string name="mapSet">input</string>
+            </context>
+        </step>
+    </operation>
+</operation-cfg>

@@ -1,0 +1,95 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE operation-cfg PUBLIC "-//PAI//DTD OPERATIONS//CN" "http://wtdf.newstrength.cn/wtdf/wtdf-operations-3.0.dtd">
+<operation-cfg>
+	<operation id="/d2s/publishList" name="动转静发布结果列表" type="api" token="true">
+		<context>
+			<Record name="input">
+				<int name="siteId" required="true" desc="所属站点"/>
+				<string name="eventStatus" desc="任务事件状态"/>
+				<string name="startCreateTime" desc="创建起始时间"/>
+				<string name="endCreateTime" desc="创建截止时间"/>
+				<int name="currentPage" desc="当前页">1</int>
+				<int name="pageSize" desc="每页显示">15</int>
+			</Record>
+		</context>
+		<step id="step1" on0Target="return" onOtherTarget="error" class-ref="QueryForListPageStep">
+			<context>
+				<string name="mapSet">input</string>
+				<string name="resource">wcms.d2s.eventlog.listPage</string>
+			</context>
+		</step>
+	</operation>
+
+	<operation id="/d2s/publish" name="手动动转静发布" type="api" token="true">
+		<context>
+			<Record name="input">
+				<int name="siteId" desc="所属站点"/>
+				<int name="channelId" desc="栏目ID"/>
+				<string name="eventType" desc="动转静事件类型"/>
+				<string name="loginId" desc="动转静事件类型"/>
+				<string name="publishType" required="true" desc="发布类型(本站点栏目、本站全部其它)" />
+				<string name="templetTypes"  desc="模板类型" />
+				<string name="channelIds"  desc="频道ID" />
+			</Record>
+		</context>
+		<step id="step1" on0Target="return" onOtherTarget="error" full-class="cn.newstrength.wcms.d2s.step.PublishStep">
+			<context>
+				<string name="mapSet">input</string>
+			</context>
+		</step>
+	</operation>
+
+	<operation id="/d2s/publishDetailList" name="动转静发布详情列表" type="api" token="true">
+		<context>
+			<Record name="input">
+				<int name="siteId" required="true" desc="所属站点"/>
+				<string name="eventId" required="true" desc="任务事件Id"/>
+				<string name="publishType" desc="发布类型"/>
+				<string name="status" desc="发布状态"/>
+				<int name="currentPage" desc="当前页">1</int>
+				<int name="pageSize" desc="每页显示">15</int>
+			</Record>
+		</context>
+		<step id="step1" on0Target="return" onOtherTarget="error" class-ref="QueryForListPageStep">
+			<context>
+				<string name="mapSet">input</string>
+				<string name="resource">wcms.d2s.filelog.listPage</string>
+			</context>
+		</step>
+	</operation>
+
+	<operation id="/d2s/rePublish" name="重新发布" type="api" token="true">
+		<context>
+			<Record name="input">
+				<int name="id" required="true" desc="发布文件ID"/>
+			</Record>
+		</context>
+		<step id="step1" on0Target="return" onOtherTarget="error" full-class="cn.newstrength.wcms.d2s.step.RePublishStep">
+			<context>
+				<string name="mapSet">input</string>
+			</context>
+		</step>
+	</operation>
+
+	<operation id="/d2s/preview" name="预览" type="api" token="true">
+		<context>
+			<Record name="input">
+				<string name="templetType" required="true" desc="模板类型"/>
+				<int name="siteId" required="true" desc="所属站点"/>
+				<int name="channelId" required="false" desc="栏目ID"/>
+				<int name="infoId" required="false" desc="信息ID"/>
+				<int name="currentPage" required="false" desc="当前页数">1</int>
+			</Record>
+		</context>
+		<step id="step1" on0Target="return" onOtherTarget="error" full-class="cn.newstrength.wcms.d2s.step.PreviewStep">
+			<context>
+				<string name="mapSet">input</string>
+			</context>
+		</step>
+	</operation>
+</operation-cfg>
+
+
+
+
+

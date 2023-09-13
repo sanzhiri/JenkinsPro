@@ -1,0 +1,9 @@
+/.attach_pid12487
+/.classpath
+/.project
+/target/
+<<<<<<< HEAD
+/logs/
+=======
+/.settings/
+>>>>>>> branch 'develop' of https://gitee.com/nsms/wcms-core-projects.git

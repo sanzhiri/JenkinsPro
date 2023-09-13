@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:context="http://www.springframework.org/schema/context" xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-4.3.xsd">
+	
+	<bean id="loggerTable" class="cn.newstrength.logger.obj.TableObj">
+		<property name="prefix" value="yyyyMM"/>
+		<property name="schema" value="WCMS8"/>
+		<property name="createSql">
+			<value>
+			<![CDATA[
+				CREATE TABLE %s (
+				    SERVICE_ID VARCHAR2(64) NOT NULL,
+				    OP_ID VARCHAR2(128) NOT NULL,
+				    TRAN_TYPE VARCHAR2(32),
+				    CODE VARCHAR2(64),
+				    NAME VARCHAR2(64),
+				    ERR_CODE TINYINT,
+				    ERR_MSG VARCHAR2(2048),
+				    EX VARCHAR2(2048),
+				    START_TIME BIGINT,
+				    END_TIME BIGINT,
+				    RUN_TIME INTEGER,
+				    REMOTE_ADDR VARCHAR2(32),
+				    LOCAL_ADDR VARCHAR2(32),
+				    LOGIN_ID VARCHAR2(32),
+				    EXT1 VARCHAR2(128),
+				    EXT2 VARCHAR2(128),
+				    EXT3 VARCHAR2(128),
+				    EXT4 VARCHAR2(128),
+				    EXT5 VARCHAR2(128),
+				    LOG_TIME DATE
+				)
+				]]>
+			</value>
+		</property>
+		<property name="indexSql">
+			<list></list>
+		</property>
+	</bean>
+</beans>

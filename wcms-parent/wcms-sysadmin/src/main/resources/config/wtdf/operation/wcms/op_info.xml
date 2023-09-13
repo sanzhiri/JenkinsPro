@@ -1,0 +1,613 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  ~ Copyright (c) 2020, NewStrength. All rights reserved.
+  -->
+<!DOCTYPE operation-cfg PUBLIC "-//PAI//DTD OPERATIONS//CN" "http://wtdf.newstrength.cn/wtdf/wtdf-operations-3.0.dtd">
+<operation-cfg>
+    <!-- 创建信息 -->
+    <operation id="/info/create" name="创建信息" type="api" token="true">
+        <context>
+            <Record name="input">
+                <int name="channelId" required="true" desc="所属栏目"/>
+                <int name="siteId" required="true" desc="所属站点"/>
+                <string name="title" required="true" desc="标题"/>
+                <string name="subtitle" desc="副标题"/>
+                <string name="summary" desc="摘要"/>
+                <string name="content" desc="正文内容"/>
+                <long name="sortNum" required="true" desc="排序"/>
+                <string name="attr"  desc="扩展属性"/>
+                <int name="securityLevel" required="true" desc="密级"/>
+                <string name="effectiveTime" desc="信息生效时间" filter="dateTimeFilter"/>
+                <string name="expiryTime" desc="信息失效时间" filter="dateTimeFilter"/>
+                <string name="author" desc="作者"/>
+                <string name="source" desc="来源"/>
+                <string name="keyword" desc="关键字"/>
+                <int name="topLevel" required="true" regex="^\d{1}$" desc="置顶级别"/>
+                <string name="topEffectiveTime" desc="置顶生效时间" filter="dateTimeFilter"/>
+                <string name="topExpiryTime" desc="置顶失效时间" filter="dateTimeFilter"/>
+                <int name="templateId" desc="模板id"/>
+                <int name="infoTypeId" required="true" desc="信息类型"/>
+                <!--isSub主要用来标示是否为发布操作-->
+                <string name="sub" desc="提交操作">false</string>
+                <string name="infoFiles" desc="相关附件"/>
+                <string name="infoImages" desc="相关图片"/>
+                <string name="infoBanners" desc="形象图"/>
+                <string name="infoThumbnails" desc="缩略图"/>
+                <string name="infoSeo" desc="Seo信息"/>
+                <string name="channelMapper" desc="栏目映射"/>
+                <string name="mapperMode" desc="映射方式" filter="mapperModeFilter"/>
+                <string name="createTime" desc="创建时间" filter="dateTimeFilter"/>
+            </Record>
+        </context>
+        <step id="checkHasInfo" on0Target="next" onOtherTarget="error" class-ref="CheckByCountStep">
+            <context>
+                <string name="mapSet">input</string>
+                <string name="alert">当前信息已存在于信息列表或草稿箱或回收站中</string>
+                <string name="resource">wcms.info.checkHasInfo</string>
+                <string name="checkKey">wcms.info.check.title</string>
+            </context>
+        </step>
+        <step id="CheckSensitiveWordsStep" on0Target="next" onOtherTarget="error" full-class="cn.newstrength.wcms.sysadmin.step.info.CheckSensitiveWordsStep">
+            <context>
+                <string name="mapSet">input</string>
+                <string name="config">
+<![CDATA[
+{
+ "title":"标题","subtitle":"副标题","summary":"摘要","content":"正文"
+}
+]]>
+                    </string>
+            </context>
+        </step>
+        <step id="createInfoStep" on0Target="return" onOtherTarget="error"
+              full-class="cn.newstrength.wcms.sysadmin.info.step.CreateInfoStep">
+            <context>
+                <string name="mapSet">input</string>
+                <string name="config">
+<![CDATA[
+{
+ "title":"标题","subtitle":"副标题","summary":"摘要","content":"正文"
+}
+]]>
+                    </string>
+            </context>
+        </step>
+    </operation>
+    <!-- 根据信息id查询信息 -->
+    <operation id="/info/getById" name="根据id查询信息" type="api" token="true">
+        <context>
+            <Record name="input">
+                <int name="id" required="true" desc="信息id" />
+                <string name="platform" desc="平台">sysadmin</string>
+            </Record>
+        </context>
+        <step id="queryInfoStep" on0Target="return" onOtherTarget="error"
+              full-class="cn.newstrength.wcms.sysadmin.step.info.QueryInfoByIdStep">
+            <context>
+                <string name="mapSet">input</string>
+            </context>
+        </step>
+    </operation>
+    <!-- 根据信息id查询信息详情,主要用于支持查看详情 -->
+    <operation id="/info/detail/preview" name="根据id查询信息详情-信息列表" type="api" token="true">
+        <context>
+            <Record name="input">
+                <int name="id" required="true" desc="信息id" />
+                <string name="platform" desc="平台">sysadmin</string>
+            </Record>
+        </context>
+        <step id="queryInfoDetailStep" on0Target="return" onOtherTarget="error"
+              full-class="cn.newstrength.wcms.sysadmin.step.info.QueryInfoDetailByIdStep">
+            <context>
+                <string name="mapSet">input</string>
+            </context>
+        </step>
+    </operation>
+    <!-- 根据信息id查询信息详情,主要用于支持流程审批 -->
+    <operation id="/info/detail/review" name="根据id查询信息详情-流程审批" type="api" token="true">
+        <context>
+            <Record name="input">
+                <int name="id" required="true" desc="信息id" />
+            </Record>
+        </context>
+        <step id="queryInfoDetailStep" on0Target="return" onOtherTarget="error"
+              full-class="cn.newstrength.wcms.sysadmin.step.info.QueryInfoDetailForFlowStep">
+            <context>
+                <string name="mapSet">input</string>
+            </context>
+        </step>
+    </operation>
+    <!-- 更新引用信息 -->
+    <operation id="/info/updateRef" name="更新引用信息" type="api" token="true">
+        <context>
+            <Record name="input">
+                <int name="id" required="true" desc="信息id" />
+                <int name="channelId" required="true" desc="所属栏目"/>
+                <int name="siteId" required="true" desc="所属站点"/>
+                <string name="title" required="true" desc="标题"/>
+                <string name="subtitle" desc="副标题"/>
+                <string name="summary" desc="摘要"/>
+                <long name="sortNum" required="true" desc="排序"/>
+                <int name="topLevel" required="true" desc="置顶级别"/>
+                <string name="topEffectiveTime" desc="置顶生效时间" filter="dateTimeFilter"/>
+                <string name="topExpiryTime" desc="置顶失效时间" filter="dateTimeFilter"/>
+            </Record>
+        </context>
+        <step id="updateRefInfoStep" on0Target="return" onOtherTarget="error"
+              full-class="cn.newstrength.wcms.sysadmin.step.info.UpdateRefInfoStep">
+            <context>
+                <string name="mapSet">input</string>
+            </context>
+        </step>
+    </operation>
+    <!-- 修改信息 -->
+    <operation id="/info/update" name="修改信息" type="api" token="true">
+        <context>
+            <Record name="input">
+                <int name="id" required="true" desc="信息id" />
+                <int name="channelId" required="true" desc="所属栏目"/>
+                <int name="siteId" required="true" desc="所属站点"/>
+                <string name="title" required="true" desc="标题"/>
+                <string name="subtitle" desc="副标题"/>
+                <string name="summary" desc="摘要"/>
+                <string name="content" desc="正文内容"/>
+                <long name="sortNum" required="true" desc="排序"/>
+                <string name="attr"  desc="扩展属性"/>
+                <int name="securityLevel" required="true" desc="密级"/>
+                <string name="effectiveTime" desc="信息生效时间" filter="dateTimeFilter"/>
+                <string name="expiryTime" desc="信息失效时间" filter="dateTimeFilter"/>
+                <string name="author" desc="作者"/>
+                <string name="source" desc="来源"/>
+                <string name="keyword" desc="关键字"/>
+                <int name="topLevel" required="true" regex="^\d{1}$" desc="置顶级别"/>
+                <string name="topEffectiveTime" desc="置顶生效时间" filter="dateTimeFilter"/>
+                <string name="topExpiryTime" desc="置顶失效时间" filter="dateTimeFilter"/>
+                <int name="templateId" desc="模板id"/>
+                <!--isSub主要用来标示是否为发布操作-->
+                <string name="sub" desc="提交操作">false</string>
+                <string name="infoFiles" desc="相关附件"/>
+                <string name="infoImages" desc="相关图片"/>
+                <string name="infoBanners" desc="形象图"/>
+                <string name="infoThumbnails" desc="缩略图"/>
+                <string name="infoSeo" desc="Seo信息"/>
+                <string name="delFiles" desc="删除的相关附件"/>
+                <string name="delImgs" desc="删除的相关图片"/>
+                <string name="delBanners" desc="删除的形象图"/>
+                <string name="delThumbnails" desc="删除的缩略图"/>
+            </Record>
+        </context>
+        <step id="CheckSensitiveWordsStep" on0Target="next" onOtherTarget="error"
+              full-class="cn.newstrength.wcms.sysadmin.step.info.CheckSensitiveWordsStep">
+            <context>
+                <string name="mapSet">input</string>
+                <string name="config">
+<![CDATA[
+{
+ "title":"标题","subtitle":"副标题","summary":"摘要","content":"正文"
+}
+]]>
+                    </string>
+            </context>
+        </step>
+        <step id="updateInfoStep" on0Target="return" onOtherTarget="error"
+              full-class="cn.newstrength.wcms.sysadmin.step.info.UpdateInfoStep">
+            <context>
+                <string name="mapSet">input</string>
+                <string name="config">
+<![CDATA[
+{
+ "title":"标题","subtitle":"副标题","summary":"摘要","content":"正文"
+}
+]]>
+                    </string>
+            </context>
+        </step>
+    </operation>
+    <!-- 信息sortNum接口 -->
+    <operation id="/info/sortNum" name="获取信息的排序编码" type="api" token="true">
+        <step id="infoSortNumStep" on0Target="return" onOtherTarget="error"
+              full-class="cn.newstrength.wcms.sysadmin.step.sortnum.InfoSortNumStep"/>
+    </operation>
+    <!-- 信息列表功能 -->
+    <operation id="/info/infoList" name="信息列表" type="api" token="true">
+        <context>
+            <Record name="input">
+                <int name="siteId" required="true" desc="所属站点"/>
+                <int name="channelId" desc="所属栏目"/>
+                <string name="status" desc="信息状态"/>
+                <string name="title" desc="信息标题"/>
+                <string name="isOwner" desc="由我创建"/>
+                <string name="startCreateTime" filter="dateTimeFilter" desc="创建起始时间"/>
+                <string name="endCreateTime" filter="dateTimeFilter" desc="创建截止时间"/>
+                <string name="startEffectiveTime" filter="dateTimeFilter" desc="生效起始时间"/>
+                <string name="endEffectiveTime" filter="dateTimeFilter" desc="生效截止时间"/>
+                <string name="sorted" desc="排序方式"/>
+                <int name="currentPage" desc="当前页">1</int>
+                <int name="pageSize" desc="每页显示">30</int>
+            </Record>
+        </context>
+        <step id="infoList" output="true" on0Target="next" onOtherTarget="error"
+              full-class="cn.newstrength.wcms.sysadmin.step.info.InfoListPageStep">
+            <context>
+                <string name="mapSet">input</string>
+                <string name="resource">wcms.info.infoListPage</string>
+            </context>
+        </step>
+        <step id="draftCount" on0Target="next" output="true" onOtherTarget="error"
+              full-class="cn.newstrength.wcms.sysadmin.step.info.ListCountStep">
+            <context>
+                <string name="mapSet">input</string>
+                <string name="resource">wcms.info.draftCount</string>
+            </context>
+        </step>
+        <step id="recycleCount" on0Target="return" output="true" onOtherTarget="error"
+              full-class="cn.newstrength.wcms.sysadmin.step.info.ListCountStep">
+            <context>
+                <string name="mapSet">input</string>
+                <string name="resource">wcms.info.recycleCount</string>
+            </context>
+        </step>
+    </operation>
+    <!-- 草稿箱列表功能 -->
+    <operation id="/info/draftList" name="草稿箱列表" type="api" token="true">
+        <context>
+            <Record name="input">
+                <int name="siteId" required="true" desc="所属站点"/>
+                <int name="channelId" desc="所属栏目"/>
+                <string name="title" desc="信息标题"/>
+                <string name="isOwner" desc="由我创建"/>
+                <string name="startCreateTime" filter="dateTimeFilter" desc="创建起始时间"/>
+                <string name="endCreateTime" filter="dateTimeFilter" desc="创建截止时间"/>
+                <string name="sorted" desc="排序方式"/>
+                <int name="currentPage" desc="当前页">1</int>
+                <int name="pageSize" desc="每页显示">30</int>
+            </Record>
+        </context>
+        <step id="infoList" on0Target="next" output="true" onOtherTarget="error"
+              full-class="cn.newstrength.wcms.sysadmin.step.info.InfoListPageStep">
+            <context>
+                <string name="mapSet">input</string>
+                <string name="resource">wcms.info.draftListPage</string>
+            </context>
+        </step>
+        <step id="infoCount" on0Target="next" output="true" onOtherTarget="error"
+              full-class="cn.newstrength.wcms.sysadmin.step.info.ListCountStep">
+            <context>
+                <string name="mapSet">input</string>
+                <string name="resource">wcms.info.infoListCount</string>
+            </context>
+        </step>
+        <step id="recycleCount" on0Target="return" output="true" onOtherTarget="error"
+              full-class="cn.newstrength.wcms.sysadmin.step.info.ListCountStep">
+            <context>
+                <string name="mapSet">input</string>
+                <string name="resource">wcms.info.recycleCount</string>
+            </context>
+        </step>
+    </operation>
+    <!-- 回收站列表功能 -->
+    <operation id="/info/recycleList" name="草稿箱列表" type="api" token="true">
+        <context>
+            <Record name="input">
+                <int name="siteId" required="true" desc="所属站点"/>
+                <int name="channelId" desc="所属栏目"/>
+                <string name="status" desc="信息状态"/>
+                <string name="title" desc="信息标题"/>
+                <string name="isOwner" desc="由我创建"/>
+                <string name="startDelTime" filter="dateTimeFilter" desc="删除起始时间"/>
+                <string name="endDelTime" filter="dateTimeFilter" desc="删除截止时间"/>
+                <int name="currentPage" desc="当前页">1</int>
+                <int name="pageSize" desc="每页显示">30</int>
+            </Record>
+        </context>
+        <step id="infoList" on0Target="next" output="true" onOtherTarget="error"
+              full-class="cn.newstrength.wcms.sysadmin.step.info.InfoListPageStep">
+            <context>
+                <string name="mapSet">input</string>
+                <string name="resource">wcms.info.recycleListPage</string>
+            </context>
+        </step>
+        <step id="infoCount" on0Target="next" output="true" onOtherTarget="error"
+              full-class="cn.newstrength.wcms.sysadmin.step.info.ListCountStep">
+            <context>
+                <string name="mapSet">input</string>
+                <string name="resource">wcms.info.infoListCount</string>
+            </context>
+        </step>
+        <step id="draftCount" on0Target="return" output="true" onOtherTarget="error"
+              full-class="cn.newstrength.wcms.sysadmin.step.info.ListCountStep">
+            <context>
+                <string name="mapSet">input</string>
+                <string name="resource">wcms.info.draftCount</string>
+            </context>
+        </step>
+    </operation>
+    <!-- 信息置顶 -->
+    <operation id="/info/topLevel" name="信息置顶" type="api" token="true">
+        <context>
+            <Record name="input">
+                <int name="id" required="true" desc="信息id"/>
+                <int name="channelId" required="true" desc="栏目id"/>
+                <int name="siteId" required="true" desc="站点id"/>
+                <int name="topLevel" required="true" regex="^\d{1}$" desc="置顶级别"/>
+                <string name="topEffectiveTime" filter="dateTimeFilter" desc="置顶生效时间"/>
+                <string name="topExpiryTime" filter="dateTimeFilter" desc="置顶失效时间"/>
+            </Record>
+        </context>
+        <step id="topLevelStep" on0Target="return" onOtherTarget="error"
+              full-class="cn.newstrength.wcms.sysadmin.step.info.TopLevelStep">
+            <context>
+                <string name="mapSet">input</string>
+            </context>
+        </step>
+    </operation>
+    <!-- 信息下线 -->
+    <operation id="/info/offline" name="信息下线" type="api" token="true">
+        <context>
+            <Record name="input">
+                <int name="id" required="true" desc="信息id" />
+                <int name="channelId" required="true" desc="栏目id"/>
+                <int name="siteId" required="true" desc="站点id"/>
+            </Record>
+        </context>
+        <step id="offlineStep" on0Target="return" onOtherTarget="error"
+              full-class="cn.newstrength.wcms.sysadmin.step.info.OfflineStep">
+            <context>
+                <string name="mapSet">input</string>
+            </context>
+        </step>
+    </operation>
+    <!-- 添加信息到回收站 -->
+    <operation id="/info/addToRecycle" name="添加信息到回收站" type="api" token="true">
+        <context>
+            <Record name="input">
+                <int name="id" required="true" desc="信息id" />
+                <int name="channelId" required="true" desc="栏目id"/>
+                <int name="siteId" required="true" desc="站点id"/>
+            </Record>
+        </context>
+        <step id="addToRecycleStep" on0Target="return" onOtherTarget="error"
+              full-class="cn.newstrength.wcms.sysadmin.step.info.AddToRecycleStep">
+            <context>
+                <string name="mapSet">input</string>
+            </context>
+        </step>
+    </operation>
+    <!-- 提供流程完毕后调用添加信息到回收站 -->
+    <operation id="/info/doAddToRecycle" name="流程完毕添加信息到回收站" type="api" token="false">
+        <context>
+            <Record name="input">
+                <long name="id" required="true" desc="信息id" />
+                <string name="loginId" required="true" desc="操作人"/>
+            </Record>
+        </context>
+        <step id="doAddToRecycleStep" on0Target="return" onOtherTarget="error"
+              full-class="cn.newstrength.wcms.sysadmin.step.info.AddToRecycleForFlowStep">
+            <context>
+                <string name="mapSet">input</string>
+            </context>
+        </step>
+    </operation>
+    <!-- 回收站恢复信息 -->
+    <operation id="/info/recoverInfo" name="恢复信息" type="api" token="true">
+        <context>
+            <Record name="input">
+                <int name="id" required="true" desc="信息id" />
+                <int name="channelId" required="true" desc="栏目id"/>
+                <int name="siteId" required="true" desc="站点id"/>
+            </Record>
+        </context>
+        <step id="recoverInfoStep" on0Target="return" onOtherTarget="error"
+              full-class="cn.newstrength.wcms.sysadmin.step.info.RecoverInfoStep">
+            <context>
+                <string name="mapSet">input</string>
+            </context>
+        </step>
+    </operation>
+    <!-- 移动信息 -->
+    <operation id="/info/move" name="移动信息" type="api" token="true">
+        <context>
+            <Record name="input">
+                <int name="id" required="true" desc="信息id" />
+                <int name="channelId" required="true" desc="源栏目id" />
+                <int name="targetChannelId" required="true" desc="目标栏目id"/>
+                <int name="targetSiteId" required="true" desc="目标站点id"/>
+            </Record>
+        </context>
+        <step id="moveStep" on0Target="return" onOtherTarget="error"
+              full-class="cn.newstrength.wcms.sysadmin.step.info.MoveInfoStep">
+            <context>
+                <string name="mapSet">input</string>
+            </context>
+        </step>
+    </operation>
+    <!-- 引用信息 -->
+    <operation id="/info/ref" name="信息引用" type="api" token="true">
+        <context>
+            <Record name="input">
+                <long name="id" required="true" desc="信息id" />
+                <long name="channelId" required="true" desc="源栏目id" />
+                <long name="targetChannelId" required="true" desc="目标栏目id"/>
+                <long name="targetSiteId" required="true" desc="目标站点id"/>
+            </Record>
+        </context>
+        <step id="refInfoStep" on0Target="return" onOtherTarget="error"
+              full-class="cn.newstrength.wcms.sysadmin.step.info.RefInfoStep">
+            <context>
+                <string name="mapSet">input</string>
+            </context>
+        </step>
+    </operation>
+    <!-- 信息拷贝 -->
+    <operation id="/info/copy" name="信息拷贝" type="api" token="true">
+        <context>
+            <Record name="input">
+                <long name="id" required="true" desc="信息id" />
+                <long name="channelId" required="true" desc="源栏目id" />
+                <long name="targetChannelId" required="true" desc="目标栏目id"/>
+                <long name="targetSiteId" required="true" desc="目标站点id"/>
+            </Record>
+        </context>
+        <step id="copyInfoStep" on0Target="return" onOtherTarget="error"
+              full-class="cn.newstrength.wcms.sysadmin.step.info.CopyInfoStep">
+            <context>
+                <string name="mapSet">input</string>
+            </context>
+        </step>
+    </operation>
+    <!-- 信息上线 -->
+    <operation id="/info/online" name="信息上线" type="api" token="true">
+        <context>
+            <Record name="input">
+                <int name="id" required="true" desc="信息id" />
+                <int name="channelId" required="true" desc="栏目id"/>
+                <int name="siteId" required="true" desc="站点id"/>
+            </Record>
+        </context>
+        <step id="onlineStep" on0Target="return" onOtherTarget="error"
+              full-class="cn.newstrength.wcms.sysadmin.step.info.OnlineStep">
+            <context>
+                <string name="mapSet">input</string>
+            </context>
+        </step>
+    </operation>
+    <!-- 彻底删除 -->
+    <operation id="/info/delete" name="彻底删除信息" type="api" token="true">
+        <context>
+            <Record name="input">
+                <int name="id" required="true" desc="信息id" />
+                <int name="channelId" required="true" desc="栏目id"/>
+                <int name="siteId" required="true" desc="站点id"/>
+            </Record>
+        </context>
+        <step id="deleteStep" on0Target="return" onOtherTarget="error"
+              full-class="cn.newstrength.wcms.sysadmin.step.info.DeleteStep">
+            <context>
+                <string name="mapSet">input</string>
+            </context>
+        </step>
+    </operation>
+    <!-- 草稿总数量 -->
+    <operation id="/info/draftCount" name="草稿箱列表总数" type="api" token="true">
+        <context>
+            <Record name="input">
+                <int name="channelId" desc="栏目id"/>
+                <int name="siteId" required="true" desc="站点id"/>
+            </Record>
+        </context>
+        <step id="draftCountStep" on0Target="return" onOtherTarget="error"
+              full-class="cn.newstrength.wcms.sysadmin.step.info.ListCountStep">
+            <context>
+                <string name="mapSet">input</string>
+                <string name="resource">wcms.info.draftCount</string>
+            </context>
+        </step>
+    </operation>
+    <!-- 回收站总数量 -->
+    <operation id="/info/recycleCount" name="草稿箱列表总数" type="api" token="true">
+        <context>
+            <Record name="input">
+                <int name="channelId" desc="栏目id"/>
+                <int name="siteId" required="true" desc="站点id"/>
+            </Record>
+        </context>
+        <step id="draftCountStep" on0Target="return" onOtherTarget="error"
+              full-class="cn.newstrength.wcms.sysadmin.step.info.ListCountStep">
+            <context>
+                <string name="mapSet">input</string>
+                <string name="resource">wcms.info.recycleCount</string>
+            </context>
+        </step>
+    </operation>
+    <!-- 批量删除信息到回收站 -->
+    <operation id="/info/batchAddToRecycle" name="批量删除信息到回收站" type="api" token="true">
+        <context>
+            <Record name="input">
+                <!--多个id使用逗号隔开 eg:(1 or 1,2,3)-->
+                <string name="ids" required="true" desc="信息ids列表" regex="\d+(,\d+)*"/>
+            </Record>
+        </context>
+        <step id="batchAddToRecycleStep" on0Target="return" onOtherTarget="error"
+              full-class="cn.newstrength.wcms.sysadmin.step.info.BatchAddToRecycleStep">
+            <context>
+                <string name="mapSet">input</string>
+            </context>
+        </step>
+    </operation>
+    <!--批量彻底删除回收站信息-->
+    <operation id="/info/batchDelete" name="批量彻底删除回收站信息" type="api" token="true">
+        <context>
+            <Record name="input">
+                <!--多个id使用逗号隔开 eg:(1 or 1,2,3)-->
+                <string name="ids" required="true" desc="信息ids列表" regex="\d+(,\d+)*"/>
+            </Record>
+        </context>
+        <step id="batchDeleteStep" on0Target="return" onOtherTarget="error"
+              full-class="cn.newstrength.wcms.sysadmin.step.info.BatchDeleteStep">
+            <context>
+                <string name="mapSet">input</string>
+            </context>
+        </step>
+    </operation>
+    <!--检查信息是否存在-->
+    <operation id="/info/check/exist" name="检查信息是否存在" type="api" token="true">
+        <context>
+            <Record name="input">
+                <int name="channelId" required="true" desc="所属栏目"/>
+                <int name="infoId" required="false" desc="信息id"/>
+                <string name="title" required="true" desc="标题"/>
+            </Record>
+        </context>
+        <step id="checkHasInfo" on0Target="return" onOtherTarget="error" class-ref="CheckByCountStep">
+            <context>
+                <string name="mapSet">input</string>
+                <string name="alert">当前信息已存在于信息列表或草稿箱或回收站中</string>
+                <string name="resource">wcms.info.checkHasInfo</string>
+                <string name="checkKey">wcms.info.check.title</string>
+            </context>
+        </step>
+    </operation>
+    <operation id="/info/page/preview" name="信息页面预览" type="api" token="true">
+        <context>
+            <Record name="input">
+                <int name="siteId" required="true" desc="站点id"/>
+                <int name="id" required="true" desc="信息id"/>
+            </Record>
+        </context>
+        <step id="pagePreviewStep" on0Target="return" onOtherTarget="error"
+              full-class="cn.newstrength.wcms.sysadmin.info.step.InfoPreviewStep">
+            <context>
+                <string name="mapSet">input</string>
+            </context>
+        </step>
+    </operation>
+
+    <operation id="/info/content" name="网络读取信息正文" type="api" token="false">
+        <context>
+            <Record name="input">
+                <string name="path" required="true" desc="正文路径" filter="contentPathFilter"/>
+            </Record>
+        </context>
+        <step id="readContentStep" on0Target="return" onOtherTarget="error"
+              full-class="cn.newstrength.wcms.sysadmin.info.step.ReadContentStep">
+            <context>
+                <string name="mapSet">input</string>
+            </context>
+        </step>
+    </operation>
+	<!-- 信息排序修改-->
+	<operation id="/info/updateSortNum" name="更新信息排序" type="api" token="true">
+		<context>
+			<Record name="input">
+				<int name="id" required="true" desc="信息Id" />
+				<long name="sortNum" required="true" desc="排序值" />
+			</Record>
+		</context>
+		<step id="step1" on0Target="return" onOtherTarget="error" class-ref="UpdateStep">
+			<context>
+				<string name="mapSet">input</string>
+				<string name="resource">wcms.info.updateInfoSortNum</string>
+			</context>
+		</step>
+	</operation>
+</operation-cfg>

@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  ~ Copyright (c) 2020, NewStrength. All rights reserved.
+  -->
+<!DOCTYPE operation-cfg PUBLIC "-//PAI//DTD OPERATIONS//CN" "http://wtdf.newstrength.cn/wtdf/wtdf-operations-3.0.dtd">
+<operation-cfg>
+    <operation id="/system/param/query" name="查询所有的系统参数" type="api" token="true">
+        <step id="queryAll" on0Target="return" onOtherTarget="error" class-ref="QueryForListStep">
+            <context>
+                <string name="mapSet">input</string>
+                <string name="resource">wcms.system.param.queryTree</string>
+            </context>
+        </step>
+    </operation>
+
+    <operation id="/system/param/edit" name="修改系统参数" type="api" token="true">
+        <context>
+            <Record name="input">
+                <int name="id" required="true" desc="参数id" />
+                <string name="paramValue" required="true" desc="参数值"/>
+            </Record>
+        </context>
+        <step id="editStep" on0Target="return" onOtherTarget="error"
+              full-class="cn.newstrength.wcms.sysadmin.sysparam.step.UpdateParamStep">
+            <context>
+                <string name="mapSet">input</string>
+            </context>
+        </step>
+    </operation>
+</operation-cfg>

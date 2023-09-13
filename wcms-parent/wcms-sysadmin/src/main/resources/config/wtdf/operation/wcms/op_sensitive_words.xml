@@ -1,0 +1,145 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE operation-cfg PUBLIC "-//PAI//DTD OPERATIONS//CN" "http://wtdf.newstrength.cn/wtdf/wtdf-operations-3.0.dtd">
+<operation-cfg>
+	
+	<operation id="/sensitivewords/create" name="创建敏感词接口" type="api" token="true">
+		<context>
+			<Record name="input">
+				<string name="sensitivewords" required="true" desc="敏感词"/>
+				<string name="sensitiveLevel" required="true" desc="一级分类"/>
+				<string name="sensitiveType" required="true" desc="二级分类"/>
+				<string name="status" required="true" desc="生效状态" />
+			</Record>
+		</context>
+		<step id="CheckByCountStep" on0Target="next" onOtherTarget="error" class-ref="CheckByCountStep">
+			<context>
+				<string name="mapSet">input</string>
+				<string name="alert">敏感词已存在，请重新填写。</string>
+				<string name="resource">wcms.sensitivewords.hasExit</string>
+			</context>
+		</step>
+		<step id="CreateStep" on0Target="next" onOtherTarget="error" full-class="cn.newstrength.wcms.sysadmin.step.sensitivewords.CreateStep">
+			<context>
+				<string name="mapSet">input</string>
+			</context>
+		</step>
+	</operation>
+
+	<operation id="/sensitivewords/list" name="敏感词查询接口" type="api" token="true">
+		<context>
+			<Record name="input">
+				<string name="sensitivewords" desc="敏感词"/>
+				<string name="status" desc="状态"/>
+				<string name="sensitiveLevel" desc="一级分类"/>
+				<string name="sensitiveType" desc="二级分类"/>
+				<string name="status" desc="生效状态" />
+				<string name="approvalStatus" desc="审批状态" />
+				<int name="currentPage" desc="当前页">1</int>
+				<int name="pageSize" desc="每页显示">50</int>
+			</Record>
+		</context>
+		<step id="QueryForListPageStep" on0Target="next" onOtherTarget="error" class-ref="QueryForListPageStep">
+			<context>
+				<string name="mapSet">input</string>
+				<string name="resource">wcms.sensitivewords.query</string>
+			</context>
+		</step>
+		<step id="convert" on0Target="return" onOtherTarget="error" full-class="cn.newstrength.wcms.sysadmin.step.sensitivewords.ConvertStep">
+			<context>
+				<string name="dataId">QueryForListPageStep</string>
+			</context>
+		</step>
+	</operation>
+	
+	<operation id="/sensitivewords/info" name="敏感词详情接口" type="api" token="true">
+		<context>
+			<Record name="input">
+				<int name="id" required="true" desc="敏感词ID" />
+			</Record>
+		</context>
+		<step id="QueryForObjectStep" on0Target="next" onOtherTarget="error" class-ref="QueryForObjectStep">
+			<context>
+				<string name="mapSet">input</string>
+				<string name="resource">wcms.sensitivewords.query</string>
+			</context>
+		</step>
+		<step id="convert" on0Target="return" onOtherTarget="error" full-class="cn.newstrength.wcms.sysadmin.step.sensitivewords.ConvertRowStep">
+			<context>
+				<string name="dataId">QueryForObjectStep</string>
+			</context>
+		</step>
+	</operation>
+	
+	<operation id="/sensitivewords/update" name="敏感词更新接口" type="api" token="true">
+		<context>
+			<Record name="input">
+				<int name="id" required="true" desc="敏感词ID" />
+				<string name="sensitivewords" desc="敏感词"/>
+				<string name="sensitiveLevel" desc="一级分类"/>
+				<string name="sensitiveType" desc="二级分类"/>
+				<string name="status" desc="生效状态" />
+			</Record>
+		</context>
+		<step id="CheckByCountStep" on0Target="next" onOtherTarget="error" class-ref="CheckByCountStep">
+			<context>
+				<string name="mapSet">input</string>
+				<string name="alert">敏感词已存在，请重新填写。</string>
+				<string name="resource">wcms.sensitivewords.hasExit</string>
+			</context>
+		</step>
+		<step id="UpdateStep" on0Target="next" onOtherTarget="error" class-ref="UpdateStep">
+			<context>
+				<string name="mapSet">input</string>
+				<string name="resource">wcms.sensitivewords.update</string>
+			</context>
+		</step>
+		<step id="RefreshStep" on0Target="return" onOtherTarget="error" full-class="cn.newstrength.wcms.sysadmin.step.sensitivewords.RefreshStep">
+		</step>
+	</operation>
+		
+	<operation id="/sensitivewords/getById" name="敏感词详情接口" type="api" token="true">
+		<context>
+			<Record name="input">
+				<int name="id" required="true" desc="敏感词ID" />
+			</Record>
+		</context>
+		<step id="step1" on0Target="return" onOtherTarget="error" class-ref="QueryForObjectStep">
+			<context>
+				<string name="mapSet">input</string>
+				<string name="resource">wcms.sensitivewords.query</string>
+			</context>
+		</step>
+	</operation>
+			
+	<operation id="/sensitivewords/deleteById" name="敏感词删除接口" type="api" token="true">
+		<context>
+			<Record name="input">
+				<int name="id" required="true" desc="敏感词ID" />
+			</Record>
+		</context>
+		<step id="step1" on0Target="next" onOtherTarget="error" class-ref="DeleteStep">
+			<context>
+				<string name="mapSet">input</string>
+				<string name="resource">wcms.sensitivewords.deleteById</string>
+			</context>
+		</step>
+		<step id="RefreshStep" on0Target="return" onOtherTarget="error" full-class="cn.newstrength.wcms.sysadmin.step.sensitivewords.RefreshStep">
+		</step>
+	</operation>
+	
+	<operation id="/sensitivewords/delete/batch" name="敏感词删除接口" type="api" token="true">
+		<context>
+			<Record name="input">
+				<string name="ids" required="true" desc="敏感词ID" />
+			</Record>
+		</context>
+		<step id="step1" on0Target="next" onOtherTarget="error" full-class="cn.newstrength.wcms.sysadmin.step.sensitivewords.DeleteByBatchStep">
+			<context>
+				<string name="mapSet">input</string>
+				<string name="resource">wcms.sensitivewords.deleteById</string>
+			</context>
+		</step>
+		<step id="RefreshStep" on0Target="return" onOtherTarget="error" full-class="cn.newstrength.wcms.sysadmin.step.sensitivewords.RefreshStep">
+		</step>
+	</operation>	
+</operation-cfg>

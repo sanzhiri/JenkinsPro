@@ -1,0 +1,368 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE operation-cfg PUBLIC "-//PAI//DTD OPERATIONS//CN" "http://wtdf.newstrength.cn/wtdf/wtdf-operations-3.0.dtd">
+<operation-cfg>
+	<!-- 
+		渠道管理
+	 -->
+	<operation id="/channel/create" name="创建渠道" type="api" token="true">
+		<context>
+			<Record name="input"> 
+				<int name="parentId" required="true" desc="父ID"/>
+				<int name="siteId" required="true" desc="站点ID"/>
+				<string name="name" required="true" desc="名称"/>
+				<string name="code" required="true" desc="编码"/>
+				<string name="navbar" required="true" desc="导航栏显示"/>
+				<string name="testing" required="true" desc="是否测试"/>
+				<string name="folder" required="true" desc="频道目录"/>
+				<string name="sortNum" required="true" desc="排序"/>
+				<string name="securityLevel" required="true" desc="密级"/>
+				<string name="effectiveTime" desc="生效时间"/>
+				<string name="expiryTime"  desc="失效时间"/>
+				<string name="remark" desc="备注" />
+			</Record>
+		</context>
+		<step id="step0" on0Target="next" onOtherTarget="error" class-ref="CheckByCountStep">
+			<context>
+				<string name="mapSet">input</string>
+				<string name="alert">目录已存在，请重新填写。</string>
+				<string name="resource">wcms.channel.checkFolder</string>
+			</context>
+		</step>
+		<step id="step1" on0Target="next" onOtherTarget="error" class-ref="CheckByCountStep">
+			<context>
+				<string name="mapSet">input</string>
+				<string name="alert">栏目编码重复，请重新填写。</string>
+				<string name="resource">wcms.channel.checkCode</string>
+			</context>
+		</step>
+		<step id="createChannel" on0Target="return" onOtherTarget="error" full-class="cn.newstrength.wcms.sysadmin.step.channel.CreateChannelStep">
+			<context>
+				<string name="mapSet">input</string>
+			</context>
+		</step>
+	</operation>
+	
+
+	<operation id="/channel/updateExt" name="创建渠道扩展" type="api" token="true">
+		<context>
+			<Record name="input"> 
+				<int name="channelId" required="true" desc="渠道ID" />
+				<string name="infoTypesJson" desc="信息类型json"/>
+				<string name="imagesJson" required="true" desc="图片json"/>
+				<string name="bannerJson" desc="形象图json"/>
+				<string name="thumbnailJson" desc="缩略图json"/>
+				<string name="description" desc="频道描述"/>
+				<int name="isOutLink" required="true" desc="外部链接"/>
+				<string name="outLink" desc="外部链接地址"/>
+				<int name="isInnerLink" required="true" desc="内部链接"/>
+				<string name="innerLink"  desc="内部链接"/>
+			</Record>
+		</context>
+		<step id="step0" on0Target="next" onOtherTarget="error" full-class="cn.newstrength.wcms.sysadmin.step.channel.IsChannelPermissionStep">
+			<context>
+				<string name="mapSet">input</string>
+			</context>
+		</step>
+		<step id="updateExtChannel" on0Target="return" onOtherTarget="error" full-class="cn.newstrength.wcms.sysadmin.step.channel.UpdateChannelExtStep">
+			<context>
+				<string name="mapSet">input</string>
+			</context>
+		</step>
+	</operation>
+
+	<operation id="/channel/tree" name="栏目树" type="api" token="true">
+		<context>
+			<Record name="input">
+				<int name="siteId" required="true" desc="站点"/>
+			</Record>
+		</context>
+		<step id="step1" on0Target="return" onOtherTarget="error" full-class="cn.newstrength.wcms.sysadmin.step.channel.QueryForTreeStep">
+			<context>
+				<string name="mapSet">input</string>
+				<string name="resource">wcms.channel.querySimpleTree</string>
+			</context>
+		</step>
+	</operation>
+		
+	<operation id="/channel/list" name="渠道列表" type="api" token="true">
+		<context>
+			<Record name="input">
+				<int name="siteId" required="true" desc="站点"/>
+				<int name="parentId" required="true" desc="父频道"/>
+				<string name="name" desc="名称"/>
+				<string name="delStatus" desc="状态" >1</string>
+				<int name="currentPage" desc="当前页">1</int>
+				<int name="pageSize" desc="每页显示">5</int>
+				<string name="sortName" desc="排序">sortNum</string>
+		        <string name="sortOrder" desc="排序方式">asc</string>	
+			</Record>
+		</context>
+		<step id="rightsToken" output="true" on0Target="next" onOtherTarget="error" full-class="cn.newstrength.wcms.sysadmin.channel.step.GetRightsTokenStep">
+			<context>
+				<string name="mapSet">input</string>
+			</context>
+		</step>
+		<step id="_sql" output="false" on0Target="next" onOtherTarget="error" full-class="cn.newstrength.wcms.sysadmin.channel.step.AclManagerStep">
+			<context>
+				<string name="mapSet">input</string>
+			</context>
+		</step>
+		<step id="queryData" output="true" on0Target="return" onOtherTarget="error" class-ref="QueryForListPageStep">
+			<context>
+				<string name="mapSet">input</string>
+				<string name="resource">wcms.channel.queryAclList</string>
+			</context>
+		</step>
+	</operation>
+
+	<operation id="/channel/listByParentId" name="渠道列表" type="api" token="true">
+		<context>
+			<Record name="input">
+				<int name="siteId" required="true" desc="站点"/>
+				<int name="parentId" required="true" desc="父频道"/>
+				<string name="sortName" desc="排序">sortNum</string>
+		        <string name="sortOrder" desc="排序方式">asc</string>	
+			</Record>
+		</context>
+		<step id="_sql" on0Target="next" onOtherTarget="error" full-class="cn.newstrength.wcms.sysadmin.channel.step.AclReaderStep">
+			<context>
+				<string name="mapSet">input</string>
+			</context>
+		</step>
+		<step id="queryData" on0Target="return" onOtherTarget="error" class-ref="QueryForListStep">
+			<context>
+				<string name="mapSet">input</string>
+				<string name="resource">wcms.channel.queryAclTree</string>
+			</context>
+		</step>
+	</operation>
+	<operation id="/channel/update" name="更新渠道" type="api" token="true">
+		<context>
+			<Record name="input">
+				<int name="channelId" required="true" desc="渠道ID" />
+				<int name="parentId" required="true" desc="父ID"/>
+				<int name="siteId" required="true" desc="站点ID"/>
+				<string name="name" required="true" desc="名称"/>
+				<string name="code" required="true" desc="编码"/>
+				<string name="navbar" required="true" desc="导航栏显示"/>
+				<string name="testing" required="true" desc="是否测试"/>
+				<string name="folder" required="true" desc="频道目录"/>
+				<string name="sortNum" required="true" desc="排序"/>
+				<string name="securityLevel" required="true" desc="密级"/>
+				<string name="effectiveTime" desc="生效时间"/>
+				<string name="expiryTime"  desc="失效时间"/>
+				<string name="status" desc="状态" >published</string>
+			</Record>
+		</context>
+		<step id="step0" on0Target="next" onOtherTarget="error" class-ref="CheckByCountStep">
+			<context>
+				<string name="mapSet">input</string>
+				<string name="alert">目录已存在，请重新填写。</string>
+				<string name="resource">wcms.channel.checkFolder</string>
+			</context>
+		</step>
+		<step id="step1" on0Target="next" onOtherTarget="error" class-ref="CheckByCountStep">
+			<context>
+				<string name="mapSet">input</string>
+				<string name="alert">栏目编码重复，请重新填写。</string>
+				<string name="resource">wcms.channel.checkCode</string>
+			</context>
+		</step>
+		
+		<step id="UpdateStep" on0Target="return" onOtherTarget="error" full-class="cn.newstrength.wcms.sysadmin.step.channel.UpdateChannelStep">
+			<context>
+				<string name="mapSet">input</string>
+				<string name="resource">wcms.channel.update</string>
+			</context>
+		</step>
+	</operation>
+		
+	<operation id="/channel/getById" name="获取渠道详情" type="api" token="true">
+		<context>
+			<Record name="input">
+				<int name="id" required="true" desc="频道ID" />
+			</Record>
+		</context>
+		<step id="step1" on0Target="next" onOtherTarget="error" full-class="cn.newstrength.wcms.sysadmin.step.channel.IsChannelPermissionStep">
+			<context>
+				<string name="mapSet">input</string>
+			</context>
+		</step>
+		<step id="step2" on0Target="return" onOtherTarget="error" full-class="cn.newstrength.wcms.sysadmin.step.channel.GetChannelStep">
+			<context>
+				<string name="mapSet">input</string>
+				<string name="resource">wcms.channel.query</string>
+                <string name="platform" desc="平台">sysadmin</string>
+			</context>
+		</step>
+	</operation>
+	
+	<operation id="/channel/flow/getById" name="审批获取渠道详情" type="api" token="true">
+		<context>
+			<Record name="input">
+				<int name="id" required="true" desc="频道ID" />
+			</Record>
+		</context>
+		<step id="step1" on0Target="return" onOtherTarget="error" full-class="cn.newstrength.wcms.sysadmin.step.channel.GetChannelStep">
+			<context>
+				<string name="mapSet">input</string>
+				<string name="resource">wcms.channel.query</string>
+			</context>
+		</step>
+	</operation>
+	
+	<!-- 
+		TODO 待完善
+	 -->
+	<operation id="/channel/deleteById" name="渠道放入回收站" type="api" token="true">
+		<context>
+			<Record name="input">
+				<string name="id" required="true" desc="频道ID" />
+			</Record>
+		</context>
+		<step id="step1" on0Target="return" onOtherTarget="error" full-class="cn.newstrength.wcms.sysadmin.step.channel.DeleteChannelTORecycleStep">
+			<context>
+				<string name="mapSet">input</string>
+				<string name="resource">wcms.channel.deleteById</string>
+			</context>
+		</step>
+	</operation>	
+
+	<operation id="/channel/recycle/deleteById" name="物理删除渠道" type="api" token="true">
+		<context>
+			<Record name="input">
+				<string name="id" required="true" desc="频道ID" />
+			</Record>
+		</context>
+		<step id="step1" on0Target="return" onOtherTarget="error" full-class="cn.newstrength.wcms.sysadmin.step.channel.DeleteChannelStep">
+			<context>
+				<string name="mapSet">input</string>
+			</context>
+		</step>
+	</operation>
+	
+	<operation id="/channel/recycle/recovery" name="回收站-恢复-渠道" type="api" token="true">
+		<context>
+			<Record name="input">
+				<string name="id" required="true" desc="频道ID" />
+			</Record>
+		</context>
+		<step id="step1" on0Target="return" onOtherTarget="error" full-class="cn.newstrength.wcms.sysadmin.step.channel.RecoveryChannelStep">
+			<context>
+				<string name="mapSet">input</string>
+				<string name="resource">wcms.channel.deleteById</string>
+			</context>
+		</step>
+	</operation>	
+	
+	<operation id="/channel/getMaxSortNum" name="获取频道排序" type="api" token="true">
+		<context>
+			<Record name="input">
+				<int name="parentId" required="true" desc="父ID" />
+			</Record>
+		</context>
+		<step id="step1" on0Target="return" onOtherTarget="error" full-class="cn.newstrength.wcms.sysadmin.step.channel.GetMaxSortNumStep">
+			<context>
+				<string name="mapSet">input</string>
+				<string name="resource">wcms.channel.getMaxSortNum</string>
+			</context>
+		</step>
+	</operation>
+	
+	<operation id="/channel/move" name="移动频道 " type="api" token="true">
+		<context>
+			<Record name="input">
+				<int name="targetChannelId" required="true" desc="目标ids" />
+				<string name="sourceChannelId" required="true" desc="被操作ids" />
+			</Record>
+		</context>
+		<step id="step1" on0Target="return" onOtherTarget="error" full-class="cn.newstrength.wcms.sysadmin.step.channel.MoveChannelStep">
+			<context>
+				<string name="mapSet">input</string>
+			</context>
+		</step>
+	</operation>
+		
+	<operation id="/channel/updatePermission" name="修改频道权限" type="api" token="true">
+		<context>
+			<Record name="input"> 
+				<int name="id" required="true" desc="渠道ID" />
+				<string name="permissionJson" required="true" desc="分配的JSON集合"/>
+			</Record>
+		</context>
+		<step id="updateChannel" on0Target="return" onOtherTarget="error" full-class="cn.newstrength.wcms.sysadmin.step.channel.UpdateChannelPremStep">
+			<context>
+				<string name="mapSet">input</string>
+			</context>
+		</step>
+	</operation>	
+	
+	<operation id="/channel/copy" name="移动频道 " type="api" token="true">
+		<context>
+			<Record name="input">
+				<int name="targetChannelId" required="true" desc="目标ids" />
+				<string name="sourceChannelId" required="true" desc="被操作ids" />
+			</Record>
+		</context>
+		<step id="step1" on0Target="return" onOtherTarget="error" full-class="cn.newstrength.wcms.sysadmin.step.channel.CopyChannelStep">
+			<context>
+				<string name="mapSet">input</string>
+			</context>
+		</step>
+	</operation>
+	<operation id="/channel/isPermission" name="判断权限 " type="api" token="true">
+		<context>
+			<Record name="input">
+				<int name="channelId" required="true" desc="频道ID" />
+			</Record>
+		</context>
+		<step id="step1" on0Target="return" onOtherTarget="error" full-class="cn.newstrength.wcms.sysadmin.step.channel.IsChannelPermissionStep">
+			<context>
+				<string name="mapSet">input</string>
+			</context>
+		</step>
+	</operation>	
+	<operation id="/channel/ref" name="引用渠道" type="api" token="true">
+		<context>
+			<Record name="input"> 
+				<int name="parentId" required="true" desc="父ID"/>
+				<int name="refChannelId" required="true" desc="引用频道ID"/>
+				<string name="name" required="true" desc="名称"/>
+			</Record>
+		</context>
+		<step id="createChannel" on0Target="return" onOtherTarget="error" full-class="cn.newstrength.wcms.sysadmin.step.channel.RefChannelStep">
+			<context>
+				<string name="mapSet">input</string>
+			</context>
+		</step>
+	</operation>
+	
+	<operation id="/channel/dragSort" name="拖动排序" type="api" token="true">
+		<context>
+			<Record name="input"> 
+				<string name="sourceChannel" required="true" desc="调整频道"/>
+				<string name="targetChannel" required="true" desc="目标位置频道"/>
+				<int name="parentId" required="true" desc="父ID"/>
+			</Record>
+		</context>
+		<step id="createChannel" on0Target="return" onOtherTarget="error" full-class="cn.newstrength.wcms.sysadmin.step.channel.DragSortChannelStep">
+			<context>
+				<string name="mapSet">input</string>
+			</context>
+		</step>
+	</operation>
+	
+	<operation id="/channel/preview" name="栏目预览" type="api" token="true">
+		<context>
+			<Record name="input"> 
+				<long name="channelId" required="true" desc="栏目ID"/>
+			</Record>
+		</context>
+		<step id="ChannelPreviewStep" on0Target="return" onOtherTarget="error" full-class="cn.newstrength.wcms.sysadmin.channel.step.ChannelPreviewStep">
+			<context>
+				<string name="mapSet">input</string>
+			</context>
+		</step>
+	</operation>
+	
+</operation-cfg>

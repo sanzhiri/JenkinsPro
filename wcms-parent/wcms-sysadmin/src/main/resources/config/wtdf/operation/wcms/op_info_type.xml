@@ -1,0 +1,100 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  ~ Copyright (c) 2020, NewStrength. All rights reserved.
+  -->
+<!-- 信息类型管理 -->
+<!DOCTYPE operation-cfg PUBLIC "-//PAI//DTD OPERATIONS//CN" "http://wtdf.newstrength.cn/wtdf/wtdf-operations-3.0.dtd">
+<operation-cfg>
+	<!-- 信息类型管理列表页 -->
+	<operation id="/infotype/list" name="查询WcmsInfoType清单" type="api" token="true">
+		<context>
+			<Record name="input">
+				<string name="name" desc="类型名称"/>
+				<string name="status" desc="状态"/>
+				<int name="currentPage" desc="当前页">1</int>
+				<int name="pageSize" desc="每页显示">10</int>
+			</Record>
+		</context>
+		<step id="listPageStep" on0Target="return" onOtherTarget="error" class-ref="QueryForListPageStep">
+			<context>
+				<string name="mapSet">input</string>
+				<string name="resource">wcms.infotype.listPageForInfoType</string>
+			</context>
+		</step>
+	</operation>
+	<!-- 创建信息类型 -->
+	<operation id="/infotype/create" name="创建信息类型" type="api" token="true">
+		<context>
+			<Record name="input">
+				<string name="name" required="true" desc="类型名称"/>
+				<string name="remark" desc="备注"/>
+			</Record>
+		</context>
+		<step id="createInfoTypeStep" on0Target="return" onOtherTarget="error"
+				full-class="cn.newstrength.wcms.sysadmin.step.infotype.CreateInfoTypeStep">
+			<context>
+				<string name="mapSet">input</string>
+			</context>
+		</step>
+	</operation>
+	<!-- 修改信息类型状态 -->
+	<operation id="/infotype/changestatue" name="修改信息类型状态" type="api" token="true">
+		<context>
+			<Record name="input">
+				<long name="id" required="true" desc="信息类型id"/>
+				<string name="status" required="true" desc="信息状态"/>
+			</Record>
+		</context>
+		<step id="changeInfoTypeStatueStep" on0Target="return" onOtherTarget="error"
+			  full-class="cn.newstrength.wcms.sysadmin.step.infotype.ChangeInfoTypeStatueStep">
+			<context>
+				<string name="mapSet">input</string>
+			</context>
+		</step>
+	</operation>
+	<!-- 根据id查询信息类型 -->
+	<operation id="/infotype/getById" name="根据信息id查询信息类型" type="api" token="true">
+		<context>
+			<Record name="input">
+				<long name="id" required="true" desc="信息类型id"/>
+			</Record>
+		</context>
+		<step id="getInfoTypeStep" on0Target="return" onOtherTarget="error" class-ref="QueryForObjectStep">
+			<context>
+				<string name="mapSet">input</string>
+				<string name="resource">wcms.infotype.getById</string>
+			</context>
+		</step>
+	</operation>
+	<!-- 修改信息类型 -->
+	<operation id="/infotype/update" name="修改信息类型状态" type="api" token="true">
+		<context>
+			<Record name="input">
+				<long name="id" required="true" desc="信息类型id"/>
+				<string name="name" required="true" desc="类型名称"/>
+				<string name="remark" desc="备注"/>
+			</Record>
+		</context>
+		<step id="changeInfoTypeStatueStep" on0Target="return" onOtherTarget="error"
+			  full-class="cn.newstrength.wcms.sysadmin.step.infotype.UpdateInfoTypeStep">
+			<context>
+				<string name="mapSet">input</string>
+			</context>
+		</step>
+	</operation>
+	<!-- 删除信息类型 -->
+	<operation id="/infotype/delete" name="删除信息类型" type="api" token="true">
+		<context>
+			<Record name="input">
+				<long name="id" required="true" desc="信息类型id"/>
+			</Record>
+		</context>
+		<step id="getInfoTypeStep" on0Target="return" onOtherTarget="error"
+			  full-class="cn.newstrength.wcms.sysadmin.step.infotype.DeleteInfoTypeStep">
+			<context>
+				<string name="mapSet">input</string>
+				<string name="resource">wcms.infotype.getById</string>
+			</context>
+		</step>
+	</operation>
+</operation-cfg>

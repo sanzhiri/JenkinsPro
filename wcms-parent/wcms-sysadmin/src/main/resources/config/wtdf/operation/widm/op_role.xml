@@ -1,0 +1,196 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE operation-cfg PUBLIC "-//PAI//DTD OPERATIONS//CN" "http://wtdf.newstrength.cn/wtdf/wtdf-operations-3.0.dtd">
+<operation-cfg>
+
+	<operation id="/role/tree" name="角色树查询" type="api" token="true">
+		<context>
+			<Record name="input">
+				<int name="parentId" desc="上级角色Id"/>
+			</Record>
+		</context>
+		<step id="query" on0Target="return" onOtherTarget="error" class-ref="QueryRoleTreeStep">
+			<context>
+				<string name="mapSet">input</string>
+				<string name="resource">widm.role.queryTree</string>
+			</context>
+		</step>
+	</operation>
+
+	<operation id="/role/children" name="子节点数据" type="api" token="true">
+		<context>
+			<Record name="input">
+				<int name="parentId" required="true" desc="上级角色Id" />
+			</Record>
+		</context>
+		<step id="query" on0Target="return" onOtherTarget="error" class-ref="QueryForListStep">
+			<context>
+				<string name="mapSet">input</string>
+				<string name="resource">widm.role.queryChildren</string>
+			</context>
+		</step>
+	</operation>
+	
+	<operation id="/role/getById" name="角色详情接口" type="api" token="true">
+		<context>
+			<Record name="input">
+				<int name="roleId" required="true" desc="角色ID" />
+			</Record>
+		</context>
+		<step id="step1" on0Target="return" onOtherTarget="error" class-ref="QueryForObjectStep">
+			<context>
+				<string name="mapSet">input</string>
+				<string name="resource">widm.role.getById</string>
+			</context>
+		</step>
+	</operation>
+	
+	<operation id="/role/create" name="角色创建接口" type="api" token="true">
+		<context>
+			<Record name="input">
+				<int name="roleParentId" required="true" desc="上级角色" />
+				<string name="roleName" required="true" desc="角色名称"/>
+				<string name="status" desc="角色状态">0</string>
+				<string name="remark" desc="备注" />
+			</Record>
+		</context>
+		<step id="step1" on0Target="return" onOtherTarget="error" full-class="cn.newstrength.widm.step.role.CreateStep">
+			<context>
+				<string name="mapSet">input</string>
+				<string name="resource">widm.role.create</string>
+			</context>
+		</step>
+	</operation>
+
+	<operation id="/role/update" name="角色更新接口" type="api" token="true">
+		<context>
+			<Record name="input">
+				<int name="roleId" required="true" desc="角色ID" />
+				<string name="roleName" desc="角色名称"/>
+				<string name="status" desc="状态"/>
+				<string name="remark" desc="备注" />
+			</Record>
+		</context>
+		<step id="step1" on0Target="return" onOtherTarget="error" full-class="cn.newstrength.widm.step.role.UpdateStep">
+			<context>
+				<string name="mapSet">input</string>
+				<string name="resource">widm.role.update</string>
+			</context>
+		</step>
+	</operation>
+			
+	<operation id="/role/deleteById" name="角色删除接口" type="api" token="true">
+		<context>
+			<Record name="input">
+				<int name="roleId" required="true" desc="角色ID" />
+			</Record>
+		</context>
+		<step id="step0" on0Target="step1" onOtherTarget="error" class-ref="CheckByCountStep">
+			<context>
+				<string name="mapSet">input</string>
+				<string name="alert">请首先移除子节点数据.</string>
+				<string name="resource">widm.role.count-children</string>
+			</context>
+		</step>
+		<step id="step1" on0Target="next" onOtherTarget="error" class-ref="DeleteMultiStep">
+			<context>
+				<string name="mapSet">input</string>
+				<string name="resource">["widm.user.role.deleteByRoleId","widm.acl.function.deleteByRoleId","widm.acl.condition.deleteByRoleId","widm.acl.data.deleteByRoleId","widm.role.deleteById"]</string>
+			</context>
+		</step>
+		<step id="syncFlow" output="false" on0Target="return" onOtherTarget="error" full-class="cn.newstrength.widm.flow.step.DeleteRoleNotify">
+			<context>
+				<string name="mapSet">input</string>
+			</context>
+		</step>
+	</operation>
+
+	<operation id="/role/acl/function/query" name="角色功能菜单关系查询" type="api" token="true">
+		<context>
+			<Record name="input">
+				<int name="roleId" required="true" desc="角色Id" />
+			</Record>
+		</context>
+		<step id="step1" on0Target="return" onOtherTarget="error" full-class="cn.newstrength.widm.step.role.SelectFunctionSimpleTreeStep">
+			<context>
+				<string name="mapSet">input</string>
+				<string name="resource">widm.function.selectFunctionByRoleId</string>
+			</context>
+		</step>
+	</operation>
+	
+	<operation id="/role/acl/function/update" name="更新角色功能权限" type="api" token="true">
+		<context>
+			<Record name="input">
+				<int name="roleId" required="true" desc="角色Id" />
+				<string name="funcIds" required="true" desc="功能集合" />
+			</Record>
+		</context>
+		<step id="step1" on0Target="return" onOtherTarget="error" full-class="cn.newstrength.widm.step.role.UpdateFunctionAclStep">
+			<context>
+				<string name="mapSet">input</string>
+			</context>
+		</step>
+	</operation>
+	
+	<operation id="/role/user/bind" name="角色绑定用户" type="api" token="true">
+		<context>
+			<Record name="input">
+				<int name="roleId" required="true" desc="角色ID"/>
+				<string name="userIds" desc="用户ID集合"/>
+				<string name="type" required="true" desc="绑定类型"/> 				<!-- add：绑定 remove：解绑 add_all：绑定全部 remove_all：解绑 全部  -->
+			</Record>
+		</context>
+		<step id="step1" on0Target="next" onOtherTarget="error" full-class="cn.newstrength.widm.step.role.BindUserStep">
+			<context>
+				<string name="mapSet">input</string>
+			</context>
+		</step>
+		<step id="syncFlow" output="false" on0Target="return" onOtherTarget="error" full-class="cn.newstrength.widm.flow.step.SyncNotify">
+			<context>
+				<string name="mapSet">input</string>
+			</context>
+		</step>
+	</operation>
+
+	<operation id="/role/user/unbind/query" name="查询未绑定角色的用户" type="api" token="true">
+		<context>
+			<Record name="input">
+				<int name="orgId" desc="所属机构"/>
+				<string name="userCode" desc="登录Id"/>
+				<string name="userName" desc="用户姓名"/>
+				<int name="roleId" required="true" desc="角色ID"/>
+				<int name="currentPage" desc="当前页">1</int>
+				<int name="pageSize" desc="每页显示">50</int>
+			</Record>
+		</context>
+		<step id="step1" on0Target="return" onOtherTarget="error" class-ref="QueryForListPageStep">
+			<context>
+				<string name="mapSet">input</string>
+				<string name="resource">widm.user.selectUnBindRoleUsers</string>
+			</context>
+		</step>
+	</operation>
+	
+	<operation id="/role/user/bind/query" name="查询已绑定角色的用户" type="api" token="true">
+		<context>
+			<Record name="input">
+				<int name="orgId" desc="所属机构"/>
+				<string name="userCode" desc="登录Id"/>
+				<string name="userName" desc="用户姓名"/>
+				<int name="roleId" required="true" desc="角色ID"/>
+				<int name="currentPage" desc="当前页">1</int>
+				<int name="pageSize" desc="每页显示">50</int>
+			</Record>
+		</context>
+		<step id="step1" on0Target="return" onOtherTarget="error" class-ref="QueryForListPageStep">
+			<context>
+				<string name="mapSet">input</string>
+				<string name="resource">widm.user.selectBindRoleUsers</string>
+			</context>
+		</step>
+	</operation>
+			
+</operation-cfg>
+
+
+

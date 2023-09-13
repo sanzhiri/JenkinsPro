@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="fe.UserMapper">
+
+	<resultMap id="hashmap" type="User">
+	  <id property="tid" column="t_id"></id>
+	  <result property="name" column="t_name"></result>
+	  <result property="tage" column="t_age"></result>
+    </resultMap>
+	<!-- 表名定义 -->
+	<sql id="table">
+		zuser
+	</sql>
+	
+	<!-- 列名定义 -->
+	<sql id="columns">
+		 t_id, t_name, t_age
+	</sql>
+	
+	<!-- 排序定义 -->
+	<sql id="orderby">
+		order by t_id desc
+	</sql>
+
+	<insert id="add">
+		INSERT INTO <include refid="table" /> (
+			t_name,
+			t_age
+		) values(
+			#{name, jdbcType=VARCHAR},
+			#{tage, jdbcType=INTEGER}
+		)
+	</insert>
+
+	<delete id="del">
+		delete  from <include refid="table"/>
+		where t_age > #{tage}
+	</delete>
+
+    <!--单结果查询-->
+	<select id="list" resultMap="hashmap">
+		select * from <include refid="table"/>
+		where t_id = #{tid}
+	</select>
+
+	<!--多结果查询-->
+	<select id="listPage" resultMap="hashmap">
+		select * from <include refid="table"/>
+	</select>
+
+	<update id="change">
+		update <include refid="table"/>
+		set t_name = #{name} where t_id = #{tid}
+	</update>
+
+</mapper>
+
+
+
+
+

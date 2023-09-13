@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE operation-cfg PUBLIC "-//PAI//DTD OPERATIONS//CN" "http://wtdf.newstrength.cn/wtdf/wtdf-operations-3.0.dtd">
+
+<!-- 
+	项目组公共Step请在这里编写 
+	编写完成后，请在spring-wtdf.xml文件中配置
+-->
+
+<operation-cfg>
+	<!-- 用于树结构的显示 -->
+	<opstep-def id="QueryTreeStep" full-class="cn.newstrength.widm.step.common.QueryTreeStep" />
+	<!-- 按钮、操作权限控制 -->
+	<opstep-def id="AclFunctionFilterStep" full-class="cn.newstrength.widm.step.common.AclFunctionFilterStep" />
+	<!-- 行数据权限控制 -->
+	<opstep-def id="AclRowFilterStep" full-class="cn.newstrength.widm.step.common.AclRowFilterStep" />
+	<!-- 列数据权限控制（暂未实现） -->
+	<opstep-def id="AclCellFilterStep" full-class="cn.newstrength.widm.step.common.AclCellFilterStep" />
+	<!-- 角色树查询 -->
+	<opstep-def id="QueryRoleTreeStep" full-class="cn.newstrength.widm.step.role.QueryRoleTreeStep" />
+</operation-cfg>

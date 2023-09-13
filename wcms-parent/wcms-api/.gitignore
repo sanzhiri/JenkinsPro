@@ -1,0 +1,8 @@
+/target/
+/.classpath
+/.project
+/.settings/
+/.factorypath
+/logs/
+/application.pid
+/.attach_pid27270

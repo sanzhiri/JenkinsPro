@@ -1,0 +1,87 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<actions>
+	<!-- 流程启动 -->
+	<action id="/wcms/start" desc="流程启动" token="true" beanId="startService">
+		<args>
+			<arg name="processDefinitionKey" required="true" title="流程标识"></arg>
+			<arg name="businessKey" required="true" title="业务标识"></arg>
+			<arg name="comment" title="评论">发起流程</arg>
+		</args>
+	</action>
+	
+	<!-- 流程提交 -->
+	<action id="/wcms/complete" desc="流程提交" token="true" beanId="wcms/complete">
+		<args>
+			<arg name="taskId" required="true" title="任务Id"></arg>
+			<arg name="action" required="true" title="审批动作"></arg>
+			<arg name="comment" title="评论">暂无意见</arg>
+		</args>
+	</action>
+	
+	<!-- 待办任务查询 -->
+	<action id="/wcms/task/query" desc="待办任务查询" token="true" beanId="wcms/task/query">
+		<args>
+			<arg name="currentPage" required="true" title="当前页"></arg>
+			<arg name="pageSize" title="每页显示">20</arg>
+		</args>
+	</action>
+	
+	<!-- 流程实例历史查询 -->
+	<action id="/wcms/process/historic" desc="流程实例历史查询" token="true" beanId="wcms/process/historic">
+		<args>
+			<arg name="currentPage" required="true" title="当前页"></arg>
+			<arg name="pageSize" title="每页显示">20</arg>
+		</args>
+	</action>
+	
+	<!-- 根据业务Key查询流程任务历史 -->
+	<action id="/wcms/info/task/historic" desc="信息流程审批历史" token="true" beanId="wcms/task/historic">
+		<args>
+			<arg name="businessKey" required="true" title="信息Id"></arg>
+		</args>
+	</action>
+
+	<action id="/wcms/element/query" desc="节点审批人定义查询" token="true" beanId="wcms/element/query">
+		<args>
+			<arg name="processDefinitionKey" required="true" title="流程标识"></arg>
+		</args>
+	</action>
+	
+	<action id="/wcms/element/role/query" desc="节点审批人定义查询" token="true" beanId="wcms/element/role/query">
+		<args>
+			<arg name="processDefinitionKey" required="true" title="流程标识"></arg>
+			<arg name="elementId" required="true" title="节点Id"></arg>
+		</args>
+	</action>
+
+	<action id="/wcms/element/role/update" desc="更新节点与角色的关系" token="true" beanId="wcms/element/role/update">
+		<args>
+			<arg name="flowId" required="true" title="流程Id"></arg>
+			<arg name="processDefinitionKey" required="true" title="流程标识"></arg>
+			<arg name="elementId" required="true" title="节点Id"></arg>
+			<arg name="elementName" required="true" title="节点Id"></arg>
+			<arg name="roleId" title="角色Id"></arg>
+		</args>
+	</action>
+
+	<action id="/wcms/generate/diagram" desc="渲染流程图" token="true" beanId="wcms/generate/diagram">
+		<args>
+			<arg name="processDefinitionKey" required="true" title="流程标识"></arg>
+		</args>
+	</action>
+	<!-- 
+		以下接口待优化
+	 -->
+	<action id="/wcms/task/historic" desc="流程任务历史查询" token="true" beanId="wcms/task/historic">
+		<args>
+			<arg name="processInstanceId" title="流程实例Id"></arg>
+			<arg name="businessKey" required="true" title="业务Key"></arg>
+		</args>
+	</action>
+	
+</actions>
+
+
+
+

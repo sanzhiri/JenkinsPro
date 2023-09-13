@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE operation-cfg PUBLIC "-//PAI//DTD OPERATIONS//CN" "http://wtdf.newstrength.cn/wtdf/wtdf-operations-3.0.dtd">
+<operation-cfg>
+
+	<operation id="/sample/acl/list" name="WIDM Sample" type="api" token="true">
+		<context>
+			<Record name="input">
+				<string name="seller" desc="销售"/>
+				<string name="customer" desc="客户"/>
+				<string name="status" desc="状态"/>
+				<string name="contract" desc="合同号"/>
+			</Record>
+		</context>
+		<step id="acl" on0Target="step1" onOtherTarget="error" class-ref="AclRowFilterStep">
+			<context>
+				<string name="resource">AUTH_SAMPLE</string>
+			</context>
+		</step>		
+		<step id="step1" on0Target="return" onOtherTarget="error" class-ref="QueryForListStep">
+			<context>
+				<string name="mapSet">input</string>
+				<string name="resource">widm.sample.list</string>
+			</context>		
+		</step>
+	</operation>
+
+
+	<operation id="/sample/code/get" name="WIDM Sample" type="api" token="true">
+		<step id="get" on0Target="return" onOtherTarget="error" class-ref="GetCodeStep">
+			<context>
+				<string name="table_name">tbl_widm_sample</string>
+				<string name="field_name">contract_number</string>
+			</context>
+		</step>
+	</operation>
+				
+</operation-cfg>
+
+
+
+
+
+
+
+
+

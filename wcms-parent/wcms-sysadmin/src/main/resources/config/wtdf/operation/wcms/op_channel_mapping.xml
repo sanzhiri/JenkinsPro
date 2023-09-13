@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE operation-cfg PUBLIC "-//PAI//DTD OPERATIONS//CN" "http://wtdf.newstrength.cn/wtdf/wtdf-operations-3.0.dtd">
+<operation-cfg>
+	<!-- 
+		栏目映射管理
+	 -->
+	<operation id="/channel/mapping/query" code="channelmapping-query" name="栏目映射查询" type="api" token="true">
+		<context>
+			<Record name="input"> 
+				<int name="sourceSiteId" required="true" desc="源站点Id"/>
+				<int name="targetSiteId" desc="目标站点Id"/>
+				<int name="sourceChannelId" desc="源栏目Id"/>
+				<int name="targetChannelId" desc="目标栏目Id"/>
+			</Record>
+		</context>
+		<step id="step0" on0Target="return" onOtherTarget="error" class-ref="QueryForListStep">
+			<context>
+				<string name="mapSet">input</string>
+				<string name="resource">wcms.channel.mapping.query</string>
+			</context>
+		</step>
+	</operation>
+	
+	<operation id="/channel/mapping/bind" code="channelmapping-bind" name="绑定栏目映射关系" type="api" token="true">
+		<context>
+			<Record name="input"> 
+				<int name="sourceSiteId" required="true" desc="源站点Id"/>
+				<int name="targetSiteId" required="true" desc="目标站点Id"/>
+				<int name="sourceChannelId" required="true" desc="源栏目Id"/>
+				<int name="targetChannelId" required="true" desc="目标栏目Id"/>
+			</Record>
+		</context>
+		<step id="step0" on0Target="return" onOtherTarget="error" class-ref="InsertStep">
+			<context>
+				<string name="mapSet">input</string>
+				<string name="resource">wcms.channel.mapping.bind</string>
+			</context>
+		</step>
+	</operation>
+	
+	<operation id="/channel/mapping/unbind" code="channelmapping-unbind" name="解除绑定栏目映射关系" type="api" token="true">
+		<context>
+			<Record name="input"> 
+				<int name="sourceChannelId" required="true" desc="源栏目Id"/>
+				<int name="targetChannelId" required="true" desc="目标栏目Id"/>
+			</Record>
+		</context>
+		<step id="step0" on0Target="return" onOtherTarget="error" full-class="cn.newstrength.wcms.sysadmin.step.channelmapping.UnBindChannelMappingStep">
+			<context>
+				<string name="mapSet">input</string>
+			</context>
+		</step>
+	</operation>
+	
+</operation-cfg>

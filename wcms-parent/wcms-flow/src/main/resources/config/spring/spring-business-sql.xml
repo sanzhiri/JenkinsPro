@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-4.3.xsd">
+
+<!-- 
+	 当流程过程中需要查询业务数据时，可通过 businessKey （业务主键）去业务表中查询业务数据，该功能多用于待办列表显示业务信息的场景
+	 通过 processDefinitionKey 可以获取到 businessKey ，然后通过MyBatis查询
+	 这样设计优点是，可以灵活展现业务数据，缺点是要遍历嵌套查询
+ -->
+ 
+	<bean id="businessSqlMapping" class="cn.newstrength.flowable.obj.BusinessSqlMapping">
+		<property name="ref">
+			<map>
+				<entry key="CHANNEL_SMART_APPROVAL" value="cn.newstrength.wcms.flow.BusinessQueryMapper.queryChannel" />
+				<entry key="INFO_SMART_APPROVAL" value="cn.newstrength.wcms.flow.BusinessQueryMapper.queryInfo" />
+			</map>
+		</property>
+	</bean>
+
+</beans>  

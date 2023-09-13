@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="fe.message">
+
+	<!-- 表名定义 -->
+	<sql id="table">
+		newstrength_message
+	</sql>
+	
+	<!-- 列名定义 -->
+	<sql id="columns">
+		 id, name, tel, message, add_time as addTime
+	</sql>
+	
+	<!-- 排序定义 -->
+	<sql id="orderby">
+		order by id desc
+	</sql>
+	
+	<!-- 查询条件定义 -->
+	<sql id="conditions">
+		<where>
+			<if test="id != null">
+				and id = #{id,jdbcType=NUMERIC}
+			</if>
+			<if test="name != null and name != ''">
+				and name like concat('%',#{name},'%')
+			</if>
+			<if test="tel != null and tel != ''">
+				and tel like concat('%',#{tel},'%')
+			</if>
+			<if test="message != null and message != ''">
+				and message like concat('%',#{message},'%')
+			</if>
+		</where>
+	</sql>
+	
+	<insert id="add" parameterType="hashmap">
+		INSERT INTO <include refid="table" /> (
+			name, 
+			tel, 
+			message, 
+			add_time
+		) values(
+			#{name, jdbcType=VARCHAR},
+			#{tel, jdbcType=VARCHAR},
+			#{message, jdbcType=VARCHAR},
+			now()
+		)
+	</insert>
+	
+	<!-- 多结果查询 -->
+	<select id="list" parameterType="hashmap" resultType="map">
+		select <include refid="columns" /> 
+		from <include refid="table" />
+		<include refid="conditions" />
+		<include refid="orderby" />
+	</select>
+	
+	<!-- 删除留言 -->
+	<delete id="delete" parameterType="hashmap">
+		delete from 
+		<include refid="table" /> 
+		where id = #{id,jdbcType=NUMERIC}
+	</delete>	
+</mapper>
+
+
+
+
+

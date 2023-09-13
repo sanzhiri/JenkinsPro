@@ -1,0 +1,138 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE operation-cfg PUBLIC "-//PAI//DTD OPERATIONS//CN" "http://wtdf.newstrength.cn/wtdf/wtdf-operations-3.0.dtd">
+<operation-cfg>
+	<!-- 
+		工作站点表
+	 -->
+	<operation id="/site/create" name="创建站点" type="api" token="true">
+		<context>
+			<Record name="input">
+				<string name="name" required="true" desc="站点名称"/>
+				<string name="code" required="true" desc="站点编码"/>
+				<string name="folder" required="true" desc="站点目录"/>
+				<string name="remark" desc="备注" />
+				<string name="status" desc="状态" >1</string>
+				<string name="isDefault" desc="默认站点" >0</string>
+				<string name="sortNum" desc="排序" >1</string>
+				
+			</Record>
+		</context>
+		<step id="step1" on0Target="return" onOtherTarget="error" full-class="cn.newstrength.wcms.sysadmin.step.site.CreateStep">
+			<context>
+				<string name="mapSet">input</string>
+				<string name="resource">wcms.site.create</string>
+			</context>
+		</step>
+	</operation>
+	
+	<operation id="/site/list" name="站点列表" type="api" token="true">
+		<context>
+			<Record name="input">
+				<string name="name" desc="站点名称"/>
+				<string name="code" desc="站点编码"/>
+				<string name="status" desc="状态"/>
+			</Record>
+		</context>
+		<step id="step1" on0Target="return" onOtherTarget="error" class-ref="QueryForListStep">
+			<context>
+				<string name="mapSet">input</string>
+				<string name="resource">wcms.site.query</string>
+			</context>
+		</step>
+	</operation>
+
+	<operation id="/site/update" name="更新站点" type="api" token="true">
+		<context>
+			<Record name="input">
+				<int name="id" required="true" desc="站点ID" />
+				<string name="name" desc="站点名称" />
+				<string name="remark" desc="站点备注" />
+				<string name="isDefault" desc="默认站点"/>
+				<string name="sortNum" desc="排序" />
+				<string name="status" desc="状态" >1</string>
+			</Record>
+		</context>
+		<step id="step1" on0Target="return" onOtherTarget="error" full-class="cn.newstrength.wcms.sysadmin.step.site.UpdateStep">
+			<context>
+				<string name="mapSet">input</string>
+				<string name="resource">wcms.site.update</string>
+			</context>
+		</step>
+	</operation>
+		
+	<operation id="/site/getById" name="获取站点详情" type="api" token="true">
+		<context>
+			<Record name="input">
+				<int name="id" required="true" desc="站点ID" />
+			</Record>
+		</context>
+		<step id="step1" on0Target="return" onOtherTarget="error" class-ref="QueryForObjectStep">
+			<context>
+				<string name="mapSet">input</string>
+				<string name="resource">wcms.site.query</string>
+			</context>
+		</step>
+	</operation>
+			
+	<operation id="/site/deleteById" name="删除站点" type="api" token="true">
+		<context>
+			<Record name="input">
+				<int name="id" required="true" desc="站点ID" />
+			</Record>
+		</context>
+		<step id="step1" on0Target="return" onOtherTarget="error" class-ref="DeleteStep">
+			<context>
+				<string name="mapSet">input</string>
+				<string name="resource">wcms.site.deleteById</string>
+			</context>
+		</step>
+	</operation>
+
+
+	<operation id="/user/sites" name="用户站点列表" type="api" token="true">
+		<context>
+			<Record name="input">
+				<string name="loginId" required="true" desc="用户名" />
+			</Record>
+		</context>
+		<step id="step1" on0Target="return" onOtherTarget="error" full-class="cn.newstrength.wcms.sysadmin.step.site.QueryForUserStep">
+			<context>
+				<string name="mapSet">input</string>
+			</context>
+		</step>
+	</operation>
+
+	<operation id="/site/user/acl" name="用户站点列表" type="api" token="false">
+		<context>
+			<Record name="input">
+				<string name="loginId" required="true" desc="用户名" />
+			</Record>
+		</context>
+		<step id="step1" on0Target="return" onOtherTarget="error" full-class="cn.newstrength.wcms.sysadmin.step.site.QueryByAclStep">
+			<context>
+				<string name="mapSet">input</string>
+			</context>
+		</step>
+	</operation>
+			
+	<operation id="/site/user/bind" name="用户绑定站点" type="api" token="true">
+		<context>
+			<Record name="input">
+				<string name="siteIds" desc="站点ID" />
+				<string name="loginId" required="true" desc="用户名" />
+			</Record>
+		</context>
+		<step id="step1" on0Target="return" onOtherTarget="error" full-class="cn.newstrength.wcms.sysadmin.step.site.BindUserStep">
+			<context>
+				<string name="mapSet">input</string>
+			</context>
+		</step>
+	</operation>
+			
+</operation-cfg>
+
+
+
+
+
+

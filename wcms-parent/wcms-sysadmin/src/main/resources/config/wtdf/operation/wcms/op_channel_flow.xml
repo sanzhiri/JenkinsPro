@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE operation-cfg PUBLIC "-//PAI//DTD OPERATIONS//CN" "http://wtdf.newstrength.cn/wtdf/wtdf-operations-3.0.dtd">
+<operation-cfg>
+
+	
+	<operation id="/channelflow/update" name="频道流程更新接口" type="api" token="true">
+		<context>
+			<Record name="input">
+					<string name="channelflowJson" required="true" desc="频道流程设置json"/>
+					<int name="channelId" required="true" desc="栏目ID"/>
+			</Record>
+		</context>
+	    <step id="step1" on0Target="next" onOtherTarget="error" full-class="cn.newstrength.wcms.sysadmin.step.channelFlow.UpdateChannelFlowStep">
+	     <context>
+			<string name="mapSet">input</string>
+	     </context>
+	    </step>   
+	</operation>
+
+
+
+
+	<operation id="/channelflow/list" name="查询频道流程清单" type="api" token="true">
+		<context>
+			<Record name="input">
+				<int name="channelId" required="true" desc="栏目ID"/>
+				<string name="idPath" desc="ID PATH"/>
+				
+				<string name="sortName" desc="排序">workflowType</string>
+		        <string name="sortOrder" desc="排序方式">asc</string>
+			</Record>
+		</context>
+		<step id="step0" on0Target="next" onOtherTarget="error" full-class="cn.newstrength.wcms.sysadmin.step.channel.IsChannelPermissionStep">
+			<context>
+				<string name="mapSet">input</string>
+			</context>
+		</step>
+		<step id="step1" on0Target="return" onOtherTarget="error" class-ref="QueryForListStep">
+			<context>
+				<string name="mapSet">input</string>
+				<string name="resource">wcms.channel.flow.list</string>
+			</context>
+		</step>
+	</operation>
+</operation-cfg>

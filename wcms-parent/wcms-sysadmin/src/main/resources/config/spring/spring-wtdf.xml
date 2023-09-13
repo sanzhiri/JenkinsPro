@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="
+		http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-4.3.xsd">
+	
+	<!-- Operation 服务配置 -->
+	<bean id="operationService" class="cn.newstrength.wtdf.web.processor.Operation" scope="prototype"></bean>
+	
+	<!-- 系统配置 -->
+	<bean id="Data" class="cn.newstrength.wtdf.web.databus.DataParser" init-method="doParser">
+		<property name="files">
+			<list>
+				<value>classpath:/config/wtdf/datacontext/data_common.xml</value>
+			</list>
+		</property>
+	</bean>
+	
+	<!-- 开发人员配置 -->
+	<bean id="Operation" class="cn.newstrength.wtdf.web.processor.OperationParser" init-method="doParser">
+		<property name="files">
+			<list>
+				<!-- common -->
+				<value>classpath:/config/wtdf/operation/common/op_wtdf.xml</value>
+				<value>classpath:/config/wtdf/operation/common/op_widm.xml</value>
+				<value>classpath:/config/wtdf/operation/common/op_wcms.xml</value>
+				<value>classpath:/config/wtdf/operation/common/op_operation.xml</value>
+				<!-- widm -->
+				<value>classpath:/config/wtdf/operation/sample/op_sample.xml</value>
+				<value>classpath:/config/wtdf/operation/widm/op_actuator.xml</value>
+				<value>classpath:/config/wtdf/operation/widm/op_dictionary.xml</value>
+				<value>classpath:/config/wtdf/operation/widm/op_user.xml</value>
+				<value>classpath:/config/wtdf/operation/widm/op_sys.xml</value>
+				<value>classpath:/config/wtdf/operation/widm/op_duty.xml</value>
+				<value>classpath:/config/wtdf/operation/widm/op_org.xml</value>
+				<value>classpath:/config/wtdf/operation/widm/op_function.xml</value>
+				<value>classpath:/config/wtdf/operation/widm/op_role.xml</value>
+				<value>classpath:/config/wtdf/operation/widm/op_table.xml</value>
+				<value>classpath:/config/wtdf/operation/widm/op_column.xml</value>
+				<value>classpath:/config/wtdf/operation/widm/op_acl.xml</value>
+				<!-- wcms -->
+				<value>classpath:/config/wtdf/operation/wcms/op_wcms.xml</value>
+				<value>classpath:/config/wtdf/operation/wcms/op_upload.xml</value>
+				<value>classpath:/config/wtdf/operation/wcms/op_site.xml</value>
+				<value>classpath:/config/wtdf/operation/wcms/op_template.xml</value>
+				<value>classpath:/config/wtdf/operation/wcms/op_secrets.xml</value>
+				<value>classpath:/config/wtdf/operation/wcms/op_sensitive_words.xml</value>
+				<value>classpath:/config/wtdf/operation/wcms/op_channel.xml</value>
+				<value>classpath:/config/wtdf/operation/wcms/op_channel_template.xml</value>
+				<value>classpath:/config/wtdf/operation/wcms/op_info.xml</value>
+				<value>classpath:/config/wtdf/operation/wcms/op_info_type.xml</value>
+				<value>classpath:/config/wtdf/operation/wcms/op_seo.xml</value>
+				<value>classpath:/config/wtdf/operation/wcms/op_channel_info_type.xml</value>
+				<value>classpath:/config/wtdf/operation/wcms/op_channel_flow.xml</value>
+				<value>classpath:/config/wtdf/operation/wcms/op_fs.xml</value>
+				<value>classpath:/config/wtdf/operation/wcms/op_fs_search.xml</value>
+				<value>classpath:/config/wtdf/operation/wcms/op_report.xml</value>
+				<value>classpath:/config/wtdf/operation/wcms/op_channel_permission.xml</value>
+				<value>classpath:/config/wtdf/operation/wcms/op_ext_field.xml</value>
+				<value>classpath:/config/wtdf/operation/wcms/op_flow_notify.xml</value>
+				<value>classpath:/config/wtdf/operation/wcms/op_job.xml</value>
+				<value>classpath:/config/wtdf/operation/wcms/op_channel_mapping.xml</value>
+				<value>classpath:/config/wtdf/operation/wcms/op_systemparam.xml</value>
+				<value>classpath:/config/wtdf/operation/wcms/op_authorization_info.xml</value>
+				<!-- flow -->
+				<value>classpath:/config/wtdf/operation/flow/op_flow.xml</value>
+			</list>
+		</property>
+	</bean>
+</beans>  

@@ -1,0 +1,278 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE operation-cfg PUBLIC "-//PAI//DTD OPERATIONS//CN" "http://wtdf.newstrength.cn/wtdf/wtdf-operations-3.0.dtd">
+<operation-cfg>
+
+	<operation id="/widm/captcha" name="验证码"  type="api" token="false">
+		<step id="step1" on0Target="return" onOtherTarget="error" full-class="cn.newstrength.widm.step.common.CaptchaStep"></step>
+	</operation>
+	<!-- 
+		regex="^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d)[a-zA-Z\\d]{8,}$"
+		数字+字母组合，至少8位，至少包含一个大写字母
+	-->
+	<operation id="/user/login" name="用户登录" code="widm-login" type="api" token="false">
+		<context>
+			<Record name="input">
+				<string name="loginId" required="true" desc="用户名" />
+				<string name="password" required="true" desc="密码"/>
+			</Record>
+			<string name="logType">BIZ</string>
+			<string name="logMsg">用户 ${loginId} 登录</string>
+		</context>
+		<step id="check" on0Target="next" onOtherTarget="error" full-class="cn.newstrength.wcms.sysadmin.step.user.CheckLoginStep">
+			<context>
+				<string name="mapSet">input</string>
+			</context>
+		</step>
+		<step id="step1" on0Target="return" onOtherTarget="error" full-class="cn.newstrength.widm.step.user.LoginStep">
+			<context>
+				<string name="mapSet">input</string>
+			</context>
+		</step>
+	</operation>
+	
+	<operation id="/user/logout" name="用户退出" code="widm-logout" type="api" token="true">
+		<step id="step1" on0Target="return" onOtherTarget="error" full-class="cn.newstrength.widm.step.user.LogoutStep"/>
+	</operation>
+		
+	<operation id="/user/password/update" name="用户修改密码" type="api" token="true">
+		<context>
+			<Record name="input">
+				<string name="oldPassword" required="true" desc="旧密码" />
+				<string name="newPassword" required="true" desc="新密码" />
+			</Record>
+		</context>
+		<step id="step1" on0Target="return" onOtherTarget="error" full-class="cn.newstrength.widm.step.user.ModifyPasswordStep">
+			<context>
+				<string name="mapSet">input</string>
+				<string name="resource">widm.user.modifyPassword</string>
+			</context>
+		</step>
+	</operation>
+
+	<operation id="/user/functions" name="[用户]查询当前用户拥有的菜单集合" type="api" token="true">
+		<context>
+			<Record name="input">
+				<string name="funcType" desc="菜单类型"/>
+			</Record>
+		</context>
+		<step id="step1" on0Target="return" onOtherTarget="error" full-class="cn.newstrength.widm.step.function.SelectUserFunctionsStep">
+			<context>
+				<string name="mapSet">input</string>
+			</context>
+		</step>
+	</operation>
+
+	<operation id="/user/function/buttons" name="[用户]查询当前用户拥有的操作按钮集合" type="api" token="true">
+		<context>
+			<Record name="input">
+				<string name="funcCode" required="true" desc="菜单编码" />
+			</Record>
+		</context>
+		<step id="step1" on0Target="return" onOtherTarget="error" full-class="cn.newstrength.widm.step.function.SelectUserFunctionButtonsStep">
+			<context>
+				<string name="mapSet">input</string>
+			</context>
+		</step>
+	</operation>
+	
+	<operation id="/user/create" name="用户创建接口" type="api" token="true">
+		<context>
+			<Record name="input">
+				<int name="orgId" required="true" desc="所属机构" />
+				<int name="dutyId" desc="职务" >1</int>
+				<string name="userCode" required="true" desc="用户名"/>
+				<string name="password" desc="密码" >111111</string>
+				<string name="roles" desc="所属角色"/>
+				<string name="userName" required="true" desc="真实姓名"/>
+				<string name="officeTel" desc="座机"/>
+				<string name="phone" desc="手机号码" />
+				<string name="email" desc="电子邮箱" />
+				<string name="status" required="true" desc="状态" /> <!-- 1启用 0 停用 -->
+			</Record>
+		</context>
+		<step id="step0" on0Target="step1" onOtherTarget="error" class-ref="CheckByCountStep">
+			<context>
+				<string name="mapSet">input</string>
+				<string name="alert">用户名已存在，请重新填写.</string>
+				<string name="resource">widm.user.checkCode</string>
+			</context>
+		</step>
+		<step id="step1" on0Target="return" onOtherTarget="error" full-class="cn.newstrength.widm.step.user.CreateStep">
+			<context>
+				<string name="mapSet">input</string>
+				<string name="resource">widm.user.create</string>
+			</context>
+		</step>
+	</operation>
+
+	<operation id="/user/getById" name="查询用户详情" type="api" token="true">
+		<context>
+			<Record name="input">
+				<string name="userId" required="true" desc="用户Id" />
+			</Record>
+		</context>
+		<step id="step1" on0Target="return" onOtherTarget="error" full-class="cn.newstrength.widm.step.user.GetByIdStep">
+			<context>
+				<string name="mapSet">input</string>
+				<string name="resource">widm.wcms.user.getById</string>
+			</context>
+		</step>
+	</operation>
+	
+	<operation id="/user/update" name="更新用户接口" type="api" token="true">
+		<context>
+			<Record name="input">
+				<int name="userId" required="true" desc="用户Id" />
+				<int name="orgId" desc="所属机构" />
+				<string name="userName" desc="用户姓名"/>
+				<string name="gender" desc="性别" />
+				<string name="birthday" desc="生日" />
+				<string name="phone" desc="手机号码" />
+				<string name="head" desc="头像" />
+				<string name="officeTel" desc="办公电话" />
+				<string name="email" desc="电子邮箱" />
+				<string name="status" desc="状态" />
+				<string name="remark" desc="备注" />
+				<string name="roles" desc="所属角色"/>
+			</Record>
+		</context>
+		<step id="step1" on0Target="return" onOtherTarget="error" full-class="cn.newstrength.widm.step.user.UpdateStep">
+			<context>
+				<string name="mapSet">input</string>
+				<string name="resource">widm.user.update</string>
+			</context>
+		</step>
+	</operation>
+	
+	<operation id="/user/deleteById" name="删除用户接口" type="api" token="true">
+		<context>
+			<Record name="input">
+				<int name="userId" required="true" desc="用户Id" />
+			</Record>
+		</context>
+		<step id="step2" on0Target="return" onOtherTarget="error" full-class="cn.newstrength.widm.step.user.SafeDeleteStep">
+			<context>
+				<string name="mapSet">input</string>
+				<string name="resource">widm.user.deleteById</string>
+			</context>
+		</step>
+	</operation>
+	
+	<operation id="/user/getuserinfo" name="获取登录用户信息" type="api" token="true">
+		<step id="step2" on0Target="return" onOtherTarget="error" full-class="cn.newstrength.widm.step.user.GetUserInfoStep"/>
+	</operation>
+	
+	<operation id="/user/headimg/upload" name="头像上传" type="api" token="true">
+		<step id="step1" on0Target="return" onOtherTarget="error" full-class="cn.newstrength.widm.step.user.UploadHeadStep">
+			<context>
+				<string name="fileType">gif,png,jpeg,jpg</string>
+			</context>
+		</step>
+	</operation>
+	
+	<operation id="/user/headimg/show" name="头像显示" type="api" token="false">
+		<step id="step1" on0Target="return" onOtherTarget="error" class-ref="UploadStep">
+			<context>
+				<string name="fileType">gif,png,jpeg,jpg</string>
+			</context>
+		</step>
+	</operation>		
+	
+	<operation id="/user/role/bind" name="用户绑定角色" type="api" token="true">
+		<context>
+			<Record name="input">
+				<int name="userId" required="true" desc="用户ID" />
+				<string name="roleIds" required="true" desc="角色ID集合"/>
+			</Record>
+		</context>
+		<step id="step2" on0Target="return" onOtherTarget="error" full-class="cn.newstrength.widm.step.user.BindRoleStep">
+			<context>
+				<string name="mapSet">input</string>
+			</context>
+		</step>
+	</operation>
+
+	<operation id="/user/role/query" name="查询用户绑定的角色数信息" type="api" token="true">
+		<context>
+			<Record name="input">
+				<int name="userId" required="true" desc="用户ID" />
+			</Record>
+		</context>
+		<step id="step2" on0Target="return" onOtherTarget="error" full-class="cn.newstrength.widm.step.user.QueryRolesStep">
+			<context>
+				<string name="mapSet">input</string>
+				<string name="resource">widm.role.selectTreeByUserId</string>
+			</context>
+		</step>
+	</operation>
+	
+	<operation id="/user/list" name="查询用户清单" type="api" token="true">
+		<context>
+			<Record name="input">
+				<string name="userCode" desc="登录Id"/>
+				<int name="orgId" desc="所属机构" />
+				<int name="roleId" desc="所属角色" />
+				<string name="phone" desc="手机号码" />
+				<string name="userName" desc="用户姓名"/>
+				<string name="status" desc="状态" />
+				<int name="currentPage" desc="当前页">1</int>
+				<int name="pageSize" desc="每页显示">50</int>
+			</Record>
+		</context>
+		<step id="step1" on0Target="return" onOtherTarget="error" class-ref="QueryForListPageStep">
+			<context>
+				<string name="mapSet">input</string>
+				<string name="resource">widm.user.selectUsers</string>
+			</context>
+		</step>
+	</operation>
+
+	<operation id="/user/status/batch/update" name="批量更新用户状态" type="api" token="true">
+		<context>
+			<Record name="input">
+				<string name="users" required="true" desc="用户集合" />
+				<string name="status" desc="状态" />
+			</Record>
+		</context>
+		<step id="step1" on0Target="return" onOtherTarget="error" full-class="cn.newstrength.widm.step.user.UpdateStatusStep">
+			<context>
+				<string name="mapSet">input</string>
+				<string name="resource">widm.user.batchUpdateStatus</string>
+			</context>
+		</step>
+	</operation>
+
+	<operation id="/user/batch/delete" name="批量删除用户" type="api" token="true">
+		<context>
+			<Record name="input">
+				<string name="users" required="true" desc="用户集合" />
+			</Record>
+		</context>
+		<step id="step1" on0Target="return" onOtherTarget="error" full-class="cn.newstrength.widm.step.user.BatchDeleteStep">
+			<context>
+				<string name="mapSet">input</string>
+				<string name="resource">widm.user.batchDelete</string>
+			</context>
+		</step>
+	</operation>
+
+	<operation id="/user/password/reset" name="用户密码重置" type="api" token="true">
+		<context>
+			<Record name="input">
+				<int name="userId" required="true" desc="用户ID" />
+			</Record>
+		</context>
+		<step id="step1" on0Target="return" onOtherTarget="error" full-class="cn.newstrength.widm.step.user.ResetPasswordStep">
+			<context>
+				<string name="mapSet">input</string>
+				<string name="resource">widm.user.resetPassword</string>
+			</context>
+		</step>
+	</operation>
+		
+</operation-cfg>
+
+
+
+
+

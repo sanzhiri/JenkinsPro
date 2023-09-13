@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  ~ Copyright (c) 2020, NewStrength. All rights reserved.
+  -->
+<!DOCTYPE operation-cfg PUBLIC "-//PAI//DTD OPERATIONS//CN" "http://wtdf.newstrength.cn/wtdf/wtdf-operations-3.0.dtd">
+<!-- xxl-job任务管理 -->
+<operation-cfg>
+    <!-- 检查任务,检查信息自动生效|生效,置顶自动生效生效,栏目生效|失效 -->
+    <operation id="/job/valid/check" name="检查任务" type="api" token="false">
+        <step id="infoCheckStep" on0Target="return" onOtherTarget="error"
+              full-class="cn.newstrength.wcms.sysadmin.step.job.JobCheckStep"/>
+    </operation>
+</operation-cfg>

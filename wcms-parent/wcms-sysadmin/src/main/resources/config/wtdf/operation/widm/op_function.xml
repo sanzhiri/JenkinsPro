@@ -1,0 +1,126 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE operation-cfg PUBLIC "-//PAI//DTD OPERATIONS//CN" "http://wtdf.newstrength.cn/wtdf/wtdf-operations-3.0.dtd">
+<operation-cfg>
+
+	
+	<operation id="/function/getById" name="菜单详情接口" type="api" token="true">
+		<context>
+			<Record name="input">
+				<int name="funcId" required="true" desc="菜单ID" />
+			</Record>
+		</context>
+		<step id="step1" on0Target="return" onOtherTarget="error" class-ref="QueryForObjectStep">
+			<context>
+				<string name="mapSet">input</string>
+				<string name="resource">widm.function.getById</string>
+			</context>
+		</step>
+	</operation>
+
+	<operation id="/function/create" name="创建菜单" type="api" token="true">
+		<context>
+			<Record name="input">
+				<int name="funcParentId" required="true" desc="菜单上级节点" />
+				<string name="funcName" required="true" desc="菜单名称" />
+				<string name="url" required="true" desc="请求路径" />
+				<string name="funcCode" required="true" desc="功能编码" />
+				<string name="funcType" required="true" desc="功能类型" />
+				<string name="view" desc="VUE视图" />
+				<string name="target" desc="窗口打开方式">1</string>
+				<string name="iconSkin" desc="菜单图标" />
+				<string name="remark" desc="菜单说明" />
+			</Record>
+		</context>
+		<step id="step0" on0Target="step1" onOtherTarget="error" class-ref="CheckByCountStep">
+			<context>
+				<string name="mapSet">input</string>
+				<string name="alert">功能编码重复，请重新填写。</string>
+				<string name="resource">widm.function.checkCode</string>
+			</context>
+		</step>
+		<step id="step1" on0Target="return" onOtherTarget="error" class-ref="CreateStep">
+			<context>
+				<string name="mapSet">input</string>
+				<string name="resource">widm.function.create</string>
+			</context>
+		</step>
+	</operation>
+		
+	<operation id="/function/update" name="菜单更新接口" type="api" token="true">
+		<context>
+			<Record name="input">
+				<int name="funcId" required="true" desc="菜单ID" />
+				<int name="funcParentId" desc="菜单上级节点" />
+				<string name="funcType" desc="功能类型" />
+				<string name="funcName" desc="菜单名称" />
+				<string name="url" desc="请求路径" />
+				<string name="view" desc="视图" />
+				<string name="target" desc="窗口打开方式" />
+				<string name="iconSkin" desc="菜单图标" />
+				<string name="remark" desc="菜单说明" />
+			</Record>
+		</context>
+		<step id="step1" on0Target="return" onOtherTarget="error" class-ref="UpdateStep">
+			<context>
+				<string name="mapSet">input</string>
+				<string name="resource">widm.function.update</string>
+			</context>
+		</step>
+	</operation>	
+	
+	<operation id="/function/deleteById" name="菜单删除接口" type="api" token="true">
+		<context>
+			<Record name="input">
+				<int name="funcId" required="true" desc="系统ID" />
+			</Record>
+		</context>
+		<step id="step1" on0Target="return" onOtherTarget="error" full-class="cn.newstrength.widm.step.function.DeleteByIdStep">
+			<context>
+				<string name="mapSet">input</string>
+				<string name="resource">widm.function.deleteById</string>
+			</context>
+		</step>
+	</operation>
+
+	<operation id="/function/tree" name="菜单树查询" type="api" token="true">
+		<context>
+			<Record name="input">
+				<int name="parentId" desc="父节点"/>
+				<string name="funcType" desc="菜单类型"/>
+			</Record>
+		</context>
+		<step id="step1" on0Target="return" onOtherTarget="error" class-ref="QueryTreeStep">
+			<context>
+				<string name="mapSet">input</string>
+				<string name="resource">widm.function.queryTree</string>
+			</context>
+		</step>
+	</operation>
+
+	<operation id="/function/children" name="子节点数据" type="api" token="true">
+		<context>
+			<Record name="input">
+				<int name="parentId" required="true" desc="上级菜单Id" />
+			</Record>
+		</context>
+		<step id="step1" on0Target="return" onOtherTarget="error" class-ref="QueryForListStep">
+			<context>
+				<string name="mapSet">input</string>
+				<string name="resource">widm.function.queryChildren</string>
+			</context>
+		</step>
+	</operation>
+</operation-cfg>
+
+
+
+
+
+
+
+
+
+
+
+
+

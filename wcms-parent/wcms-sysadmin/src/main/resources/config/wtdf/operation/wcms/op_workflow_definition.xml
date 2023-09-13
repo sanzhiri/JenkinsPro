@@ -1,0 +1,100 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE operation-cfg PUBLIC "-//PAI//DTD OPERATIONS//CN" "http://wtdf.newstrength.cn/wtdf/wtdf-operations-3.0.dtd">
+<operation-cfg>
+	<!-- 
+		工作流程定义表
+	 -->
+	<operation id="/workflowdefinition/create" name="创建流程定义" type="api" token="true">
+		<context>
+			<Record name="input">
+				<string name="definitionId" required="true" desc="流程定义Id"/>
+				<string name="definitionKey" required="true" desc="流程定义Key"/>
+				<string name="name" required="true" desc="流程定义名称"/>
+				<string name="description" required="true" desc="流程定义描述"/>
+				<int name="version" required="true" desc="流程定义版本"/>
+				<string name="status" desc="状态" >1</string>
+			</Record>
+		</context>
+		<step id="step0" on0Target="step1" onOtherTarget="error" class-ref="CheckByCountStep">
+			<context>
+				<string name="mapSet">input</string>
+				<string name="alert">流程定义Key已存在，请重新填写。</string>
+				<string name="resource">wcms.workflow.definition.checkDefinitionKey</string>
+			</context>
+		</step>
+		<step id="step1" on0Target="return" onOtherTarget="error" class-ref="CreateStep">
+			<context>
+				<string name="mapSet">input</string>
+				<string name="resource">wcms.workflow.definition.create</string>
+			</context>
+		</step>
+	</operation>
+	
+	<operation id="/workflowdefinition/getById" name="获取流程配置详情" type="api" token="true">
+		<context>
+			<Record name="input">
+				<int name="id" required="true" desc="流程配置ID" />
+			</Record>
+		</context>
+		<step id="step1" on0Target="return" onOtherTarget="error" class-ref="QueryForObjectStep">
+			<context>
+				<string name="mapSet">input</string>
+				<string name="resource">wcms.workflow.definition.query</string>
+			</context>
+		</step>
+	</operation>
+
+	<operation id="/workflowdefinition/update" name="流程配置更新" type="api" token="true">
+		<context>
+			<Record name="input">
+				<int name="id" required="true" desc="流程配置ID" />
+				<string name="name" required="true" desc="流程定义名称" />
+				<string name="description" desc="流程定义描述" />
+				<string name="status" desc="状态" />
+			</Record>
+		</context>
+		<step id="step1" on0Target="return" onOtherTarget="error" class-ref="UpdateStep">
+			<context>
+				<string name="mapSet">input</string>
+				<string name="resource">wcms.workflow.definition.update</string>
+			</context>
+		</step>
+	</operation>	
+		
+
+	<operation id="/workflowdefinition/list" name="流程配置列表" type="api" token="true">
+		<context>
+			<Record name="input">
+				<string name="name" desc="流程定义名称"/>
+				<string name="definitionKey" desc="流程定义Key"/>
+				<string name="status" desc="状态"/>
+				<int name="currentPage" desc="当前页">1</int>
+				<int name="pageSize" desc="每页显示">50</int>
+			</Record>
+		</context>
+		<step id="step1" on0Target="return" onOtherTarget="error" class-ref="QueryForListPageStep">
+			<context>
+				<string name="mapSet">input</string>
+				<string name="resource">wcms.workflow.definition.query</string>
+			</context>
+		</step>
+	</operation>
+
+
+		
+
+			
+	<operation id="/workflowdefinition/deleteById" name="删除流程定义" type="api" token="true">
+		<context>
+			<Record name="input">
+				<int name="id" required="true" desc="流程定义ID" />
+			</Record>
+		</context>
+		<step id="step1" on0Target="return" onOtherTarget="error" class-ref="DeleteStep">
+			<context>
+				<string name="mapSet">input</string>
+				<string name="resource">wcms.workflow.definition.deleteById</string>
+			</context>
+		</step>
+	</operation>	
+</operation-cfg>

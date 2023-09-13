@@ -1,0 +1,123 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE operation-cfg PUBLIC "-//PAI//DTD OPERATIONS//CN" "http://wtdf.newstrength.cn/wtdf/wtdf-operations-3.0.dtd">
+<operation-cfg>
+	<!-- 
+		流程配置，用于拉去 Flowable 模型定义
+	 -->
+	<operation id="/flow/create" name="创建流程配置" type="api" token="true">
+		<context>
+			<Record name="input">
+				<string name="processDefinitionId" required="true" desc="流程配置Id"/>
+				<string name="processDefinitionKey" required="true" desc="流程配置Key"/>
+				<string name="name" required="true" desc="流程配置名称"/>
+				<string name="description" required="true" desc="流程配置描述"/>
+				<string name="status" desc="状态" >1</string>
+			</Record>
+		</context>
+		<step id="step0" on0Target="step1" onOtherTarget="error" class-ref="CheckByCountStep">
+			<context>
+				<string name="mapSet">input</string>
+				<string name="alert">流程配置Key已存在，请重新填写。</string>
+				<string name="resource">wcms.flow.checkProcessDefinitionKey</string>
+			</context>
+		</step>
+		<step id="step1" on0Target="return" onOtherTarget="error" class-ref="CreateStep">
+			<context>
+				<string name="mapSet">input</string>
+				<string name="resource">wcms.flow.create</string>
+			</context>
+		</step>
+	</operation>
+	
+	<operation id="/flow/getById" name="流程配置详情" type="api" token="true">
+		<context>
+			<Record name="input">
+				<int name="id" required="true" desc="流程配置ID" />
+			</Record>
+		</context>
+		<step id="step1" on0Target="return" onOtherTarget="error" class-ref="QueryForObjectStep">
+			<context>
+				<string name="mapSet">input</string>
+				<string name="resource">wcms.flow.query</string>
+			</context>
+		</step>
+	</operation>
+
+	<operation id="/flow/update" name="流程配置更新" type="api" token="true">
+		<context>
+			<Record name="input">
+				<int name="id" required="true" desc="流程配置ID" />
+				<string name="name" required="true" desc="流程配置名称" />
+				<string name="description" desc="流程配置描述" />
+				<string name="status" desc="状态" />
+			</Record>
+		</context>
+		<step id="step1" on0Target="return" onOtherTarget="error" class-ref="UpdateStep">
+			<context>
+				<string name="mapSet">input</string>
+				<string name="resource">wcms.flow.update</string>
+			</context>
+		</step>
+	</operation>	
+		
+
+	<operation id="/flow/list" name="流程配置列表" type="api" token="true">
+		<context>
+			<Record name="input">
+				<string name="name" desc="流程配置名称"/>
+				<string name="processDefinitionId" desc="流程配置Id"/>
+				<string name="processDefinitionKey" desc="流程配置Key"/>
+				<string name="status" desc="状态"/>
+				<int name="currentPage" desc="当前页">1</int>
+				<int name="pageSize" desc="每页显示">50</int>
+			</Record>
+		</context>
+		<step id="step1" on0Target="return" onOtherTarget="error" class-ref="QueryForListPageStep">
+			<context>
+				<string name="mapSet">input</string>
+				<string name="resource">wcms.flow.query</string>
+			</context>
+		</step>
+	</operation>
+	
+	<!-- 接触WCMS流程关系映射 -->
+	<operation id="/flow/deleteById" name="删除流程配置" type="api" token="true">
+		<context>
+			<Record name="input">
+				<int name="id" required="true" desc="流程配置ID" />
+			</Record>
+		</context>
+		<step id="checkChannelFK" on0Target="delete" onOtherTarget="error" class-ref="CheckByCountStep">
+			<context>
+				<string name="mapSet">input</string>
+				<string name="alert">流程定义已被引用，无法删除。</string>
+				<string name="resource">wcms.channel.flow.countByFlowId</string>
+			</context>
+		</step>			
+		<step id="delete" on0Target="return" onOtherTarget="error" class-ref="DeleteMultiStep">
+			<context>
+				<string name="mapSet">input</string>
+				<string name="resource">["wcms.flow.user.deleteByFlowId","wcms.channel.flow.deleteByFlowId","wcms.flow.deleteById"]</string>
+			</context>
+		</step>
+	</operation>
+	
+	<operation id="/flow/channel" name="查询流程定义配置" type="api" token="true">
+		<context>
+			<Record name="input">
+				<string name="businessType" required="true" desc="业务类型" />
+			</Record>
+		</context>
+		<step id="queryFlow" on0Target="return" onOtherTarget="error" class-ref="QueryForListStep">
+			<context>
+				<string name="mapSet">input</string>
+				<string name="resource">wcms.flow.queryFlow</string>
+			</context>
+		</step>
+	</operation>			
+</operation-cfg>
+
+
+
+
+

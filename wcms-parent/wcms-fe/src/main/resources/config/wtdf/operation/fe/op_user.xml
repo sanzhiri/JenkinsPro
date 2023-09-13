@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE operation-cfg PUBLIC "-//PAI//DTD OPERATIONS//CN" "http://wtdf.newstrength.cn/wtdf/wtdf-operations-3.0.dtd">
+
+<operation-cfg>
+	<operation id="/user/add" name="留言提交" type="api" token="false">
+		<context>
+			<Input name="input">
+				<string name="tid" required="false" desc="编号"/>
+				<string name="name" required="true" desc="名字"/>
+				<string name="tage" required="true" desc="年龄"/>
+			</Input>
+		</context>
+		<step id="ver" on0Target="return" onOtherTarget="error" class-ref="InsertStep">
+			<context>
+				<string name="mapSet">input</string>
+				<string name="resource">fe.UserMapper.add</string>
+			</context>
+		</step>
+	</operation>
+
+	<operation id="/user/delete" name="留言提交" type="api" token="false">
+		<context>
+			<Input name="input">
+				<string name="tage" required="true" desc="年龄"/>
+			</Input>
+		</context>
+		<step id="ver" on0Target="return" onOtherTarget="error" class-ref="DeleteStep">
+			<context>
+				<string name="mapSet">input</string>
+				<string name="resource">fe.UserMapper.del</string>
+			</context>
+		</step>
+	</operation>
+
+	<operation id="/user/listOne" name="查詢" type="api" token="false">
+		<context>
+			<Input name="input">
+				<string name="tid" required="false" desc="编号"/>
+			</Input>
+		</context>
+		<step id="szrup" on0Target="return" onOtherTarget="error" class-ref="QueryForObjectStep">
+			<context>
+				<string name="mapSet">input</string>
+				<string name="resource">fe.UserMapper.list</string>
+			</context>
+		</step>
+	</operation>
+
+	<operation id="/user/listMany" name="查詢" type="api" token="false">
+		<context>
+
+		</context>
+		<step id="szrup" on0Target="return" onOtherTarget="error" class-ref="QueryForListPageStep">
+			<context>
+				<string name="mapSet">input</string>
+				<string name="resource">fe.UserMapper.listPage</string>
+			</context>
+		</step>
+	</operation>
+
+	<operation id="/user/change" name="查詢" type="api" token="false">
+		<context>
+			<Input name="input">
+				<string name="tid" required="true" desc="编号"/>
+				<string name="name" required="true" desc="名字"/>
+			</Input>
+		</context>
+		<step id="ver" on0Target="return" onOtherTarget="error" class-ref="UpdateStep">
+			<context>
+				<string name="mapSet">input</string>
+				<string name="resource">fe.UserMapper.change</string>
+			</context>
+		</step>
+	</operation>
+
+
+</operation-cfg>

@@ -1,0 +1,157 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE operation-cfg PUBLIC "-//PAI//DTD OPERATIONS//CN" "http://wtdf.newstrength.cn/wtdf/wtdf-operations-3.0.dtd">
+<operation-cfg>
+
+	<operation id="/dictionary/tree/full" name="数据字典列表查询" type="api" token="true">
+		<context>
+			<Record name="input">
+				<int name="dicType" desc="字典类型"/>
+			</Record>
+		</context>
+		<step id="query" on0Target="return" onOtherTarget="error" class-ref="QueryTreeStep">
+			<context>
+				<string name="mapSet">input</string>
+				<string name="resource">widm.dictionary.querySimpleTree</string>
+			</context>
+		</step>
+	</operation>
+	
+	<operation id="/dictionary/tree" name="数据字典列表查询" type="api" token="true">
+		<context>
+			<Record name="input">
+				<int name="parentId" desc="父节点"/>
+			</Record>
+		</context>
+		<step id="step1" on0Target="return" onOtherTarget="error" class-ref="QueryForListStep">
+			<context>
+				<string name="mapSet">input</string>
+				<string name="resource">widm.dictionary.queryTree</string>
+			</context>
+		</step>
+	</operation>
+
+	<operation id="/dictionary/children" name="子节点数据" type="api" token="true">
+		<context>
+			<Record name="input">
+				<int name="parentId" desc="父节点"/>
+			</Record>
+		</context>
+		<step id="step1" on0Target="return" onOtherTarget="error" class-ref="QueryForListStep">
+			<context>
+				<string name="mapSet">input</string>
+				<string name="resource">widm.dictionary.queryChildren</string>
+			</context>
+		</step>
+	</operation>
+		
+	<operation id="/dictionary/getById" name="数据字典详情接口" type="api" token="true">
+		<context>
+			<Record name="input">
+				<int name="dicId" required="true" desc="数据字典ID" />
+			</Record>
+		</context>
+		<step id="step1" on0Target="return" onOtherTarget="error" class-ref="QueryForObjectStep">
+			<context>
+				<string name="mapSet">input</string>
+				<string name="resource">widm.dictionary.getById</string>
+			</context>
+		</step>
+	</operation>
+	
+	<operation id="/dictionary/create" name="数据字典创建接口" type="api" token="true">
+		<context>
+			<Record name="input">
+				<int name="dicParentId" required="true" desc="父节点" >0</int>
+				<string name="dicName" required="true" desc="字典名称"/>
+				<string name="dicCode" required="true" desc="字典编码"/>
+				<string name="dicValue" desc="字典编码"/>
+				<string name="remark" desc="备注" />
+				<string name="ext1" desc="扩展项" />
+				<string name="ext2" desc="扩展项" />
+				<string name="ext3" desc="扩展项" />
+				<string name="dicTreeFlag" required="true" desc="节点类型"/>
+				<string name="dicOrder" desc="字典编码">0</string>
+			</Record>
+		</context>
+		<step id="step0" on0Target="step1" onOtherTarget="error" class-ref="CheckByCountStep">
+			<context>
+				<string name="mapSet">input</string>
+				<string name="alert">字典编码重复，请重新填写.</string>
+				<string name="resource">widm.dictionary.checkCode</string>
+			</context>
+		</step>
+		<step id="step1" on0Target="return" onOtherTarget="error" class-ref="CreateStep">
+			<context>
+				<string name="mapSet">input</string>
+				<string name="resource">widm.dictionary.create</string>
+			</context>
+		</step>
+	</operation>
+
+	<operation id="/dictionary/update" name="数据字典更新接口" type="api" token="true">
+		<context>
+			<Record name="input">
+				<int name="dicId" required="true" desc="字典ID"/>
+				<string name="dicName" desc="字典名称"/>
+				<string name="dicCode" desc="字典编码"/>
+				<string name="dicValue" desc="字典编码"/>
+				<string name="remark" desc="备注" />
+				<string name="ext1" desc="扩展项" />
+				<string name="ext2" desc="扩展项" />
+				<string name="ext3" desc="扩展项" />
+				<string name="dicTreeFlag" desc="节点类型"/>
+				<string name="dicOrder" desc="字典编码"/>
+			</Record>
+		</context>
+		<step id="step1" on0Target="return" onOtherTarget="error" class-ref="UpdateStep">
+			<context>
+				<string name="mapSet">input</string>
+				<string name="resource">widm.dictionary.update</string>
+			</context>
+		</step>
+	</operation>
+			
+	<operation id="/dictionary/deleteById" name="数据字典删除接口" type="api" token="true">
+		<context>
+			<Record name="input">
+				<int name="dicId" required="true" desc="数据字典ID" />
+			</Record>
+		</context>
+		<step id="step0" on0Target="step1" onOtherTarget="error" class-ref="CheckByCountStep">
+			<context>
+				<string name="mapSet">input</string>
+				<string name="alert">请首先移除子节点数据.</string>
+				<string name="resource">widm.dictionary.count-children</string>
+			</context>
+		</step>
+		<step id="step1" on0Target="return" onOtherTarget="error" full-class="cn.newstrength.widm.step.dictionary.SafeDeleteStep">
+			<context>
+				<string name="mapSet">input</string>
+				<string name="resource">widm.dictionary.deleteById</string>
+			</context>
+		</step>
+	</operation>
+	
+	<operation id="/dictionary/refresh" name="刷新数据字典到Redis缓存" type="api" token="true">
+		<step id="step1" on0Target="return" onOtherTarget="error" full-class="cn.newstrength.widm.step.dictionary.RefreshStep"/>
+	</operation>
+	
+	<operation id="/dictionary/get" name="获取字典数据列表" type="api" token="true">
+		<context>
+			<Record name="input">
+				<string name="key" required="true" desc="字典Key" />
+				<string name="code" desc="编码" />
+			</Record>
+		</context>
+		<step id="step1" on0Target="return" onOtherTarget="error" full-class="cn.newstrength.widm.step.dictionary.GetStep">			
+		<context>
+				<string name="mapSet">input</string>
+			</context>
+		</step>
+	</operation>	
+			
+</operation-cfg>
+
+
+
+

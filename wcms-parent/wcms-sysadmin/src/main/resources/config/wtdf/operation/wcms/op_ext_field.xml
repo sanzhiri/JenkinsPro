@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  ~ Copyright (c) 2020, NewStrength. All rights reserved.
+  -->
+<!DOCTYPE operation-cfg PUBLIC "-//PAI//DTD OPERATIONS//CN" "http://wtdf.newstrength.cn/wtdf/wtdf-operations-3.0.dtd">
+<!-- 信息扩展字段管理 -->
+<!--创建扩展字段-->
+<operation-cfg>
+    <operation id="/extfield/bind" name="绑定扩展字段" token="true" type="api">
+        <context>
+            <Record name="input">
+                <long name="infoTypeId" required="true" desc="信息类型id"/>
+                <!-- 扩展字段格式不能以花括号开头和结尾 -->
+                <string name="fields" required="false" desc="扩展字段列表" regex="^[^{]+.*[^}]+$" filter="extFieldFilter"/>
+            </Record>
+        </context>
+        <step id="bindExtFieldsStep" on0Target="return" onOtherTarget="error"
+              full-class="cn.newstrength.wcms.sysadmin.step.extfield.CreateExtFieldsAndBindStep">
+            <context>
+                <string name="mapSet">input</string>
+            </context>
+        </step>
+    </operation>
+    <operation id="/extfield/query" name="查询绑定字段" token="true" type="api">
+        <context>
+            <Record name="input">
+                <long name="infoTypeId" required="true" desc="信息类型id"/>
+            </Record>
+        </context>
+        <step id="queryCache" on0Target="return" on1Target="next" onOtherTarget="error"
+              full-class="cn.newstrength.wcms.sysadmin.step.extfield.QueryCacheBindExtFieldStep">
+            <context>
+                <string name="mapSet">input</string>
+            </context>
+        </step>
+        <step id="queryExtFieldsStep" on0Target="return" onOtherTarget="error"
+              full-class="cn.newstrength.wcms.sysadmin.step.extfield.QueryBindExtFieldStep">
+            <context>
+                <string name="mapSet">input</string>
+            </context>
+        </step>
+    </operation>
+</operation-cfg>

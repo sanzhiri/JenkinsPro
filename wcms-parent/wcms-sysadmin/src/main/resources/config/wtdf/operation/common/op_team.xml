@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE operation-cfg PUBLIC "-//PAI//DTD OPERATIONS//CN" "http://wtdf.newstrength.cn/wtdf/wtdf-operations-3.0.dtd">
+
+<!-- 
+	项目组公共Step请在这里编写 
+	编写完成后，请在spring-wtdf.xml文件中配置
+-->
+
+<operation-cfg>
+	
+</operation-cfg>

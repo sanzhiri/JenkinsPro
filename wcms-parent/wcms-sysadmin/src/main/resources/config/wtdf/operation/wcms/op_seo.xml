@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  ~ Copyright (c) 2020, NewStrength. All rights reserved.
+  -->
+<!DOCTYPE operation-cfg PUBLIC "-//PAI//DTD OPERATIONS//CN" "http://wtdf.newstrength.cn/wtdf/wtdf-operations-3.0.dtd">
+<!-- SEO管理 -->
+<operation-cfg>
+    <!--创建栏目seo-->
+    <operation id="/seo/channel/createOrUpdate" name="创建或更新栏目SEO信息" type="api" token="true">
+        <context>
+            <Record name="input">
+                <string name="title" required="true" desc="标题"/>
+                <string name="description" required="true" desc="描述"/>
+                <string name="keyword" required="true" desc="关键字"/>
+                <string name="channelId" required="true" desc="栏目id"/>
+            </Record>
+        </context>
+        <step id="createSeoStep" on0Target="return" onOtherTarget="error"
+              full-class="cn.newstrength.wcms.sysadmin.step.seo.CreateOrUpdateSeoStep">
+            <context>
+                <string name="mapSet">input</string>
+            </context>
+        </step>
+    </operation>
+
+    <!--创建站点seo-->
+    <operation id="/seo/site/createOrUpdate" name="创建或更新站点SEO信息" type="api" token="true">
+        <context>
+            <Record name="input">
+                <string name="title" required="true" desc="标题"/>
+                <string name="description" required="true" desc="描述"/>
+                <string name="keyword" required="true" desc="关键字"/>
+                <string name="siteId" required="true" desc="站点id"/>
+            </Record>
+        </context>
+        <step id="createSeoStep" on0Target="return" onOtherTarget="error"
+              full-class="cn.newstrength.wcms.sysadmin.step.seo.CreateOrUpdateSeoStep">
+            <context>
+                <string name="mapSet">input</string>
+            </context>
+        </step>
+    </operation>
+
+    <!-- 获取栏目seo信息 -->
+    <operation id="/seo/getByChannelId" name="获取栏目SEO信息" type="api" token="true">
+        <context>
+            <Record name="input">
+                <string name="channelId" required="true" desc="栏目id"/>
+            </Record>
+        </context>
+        <step id="getSeoByChannelId" on0Target="return" onOtherTarget="error" class-ref="QueryForObjectStep">
+            <context>
+                <string name="mapSet">input</string>
+                <string name="resource">wcms.seo.queryByBizId</string>
+            </context>
+        </step>
+    </operation>
+</operation-cfg>

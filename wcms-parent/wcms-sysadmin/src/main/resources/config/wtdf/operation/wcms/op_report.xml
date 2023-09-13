@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE operation-cfg PUBLIC "-//PAI//DTD OPERATIONS//CN" "http://wtdf.newstrength.cn/wtdf/wtdf-operations-3.0.dtd">
+<!-- 统计报表 -->
+<operation-cfg>
+	<operation id="/worbench/report" name="工作台汇总信息统计" type="api" token="true">
+		<context>
+			<Record name="input">
+				<string name="siteId" desc="Site id" required="true"/>
+			</Record>
+		</context>
+		<step id="site" output="true" on0Target="next" onOtherTarget="error" class-ref="QueryForCountStep">
+			<context>
+				<string name="mapSet">input</string>
+				<string name="resource">wcms.report.site</string>
+			</context>
+		</step>
+		<step id="channel" output="true" on0Target="next" onOtherTarget="error" class-ref="QueryForCountStep">
+			<context>
+				<string name="mapSet">input</string>
+				<string name="resource">wcms.report.channel</string>
+			</context>
+		</step>
+		<step id="today" output="true" on0Target="next" onOtherTarget="error" class-ref="QueryForCountStep">
+			<context>
+				<string name="mapSet">input</string>
+				<string name="resource">wcms.report.today</string>
+			</context>
+		</step>
+		<step id="total" output="true" on0Target="next" onOtherTarget="error" class-ref="QueryForCountStep">
+			<context>
+				<string name="mapSet">input</string>
+				<string name="resource">wcms.report.total</string>
+			</context>
+		</step>
+		<step id="user" output="true" on0Target="next" onOtherTarget="error" class-ref="QueryForCountStep">
+			<context>
+				<string name="mapSet">input</string>
+				<string name="resource">wcms.report.user</string>
+			</context>
+		</step>
+		<step id="approval" output="true" on0Target="return" onOtherTarget="error" class-ref="QueryForCountStep">
+			<context>
+				<string name="mapSet">input</string>
+				<string name="resource">wcms.report.approval</string>
+			</context>
+		</step>
+	</operation>
+</operation-cfg>

@@ -1,0 +1,223 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE operation-cfg PUBLIC "-//PAI//DTD OPERATIONS//CN" "http://wtdf.newstrength.cn/wtdf/wtdf-operations-3.0.dtd">
+<operation-cfg>
+	<!-- 
+		模板管理
+	 -->
+	<operation id="/template/create" name="创建模板" type="api" token="true">
+		<context>
+			<Record name="input">
+				<int name="siteId" required="true" desc="所属站点" />
+				<int name="parentId" desc="父模板" >0</int>
+				<string name="nodeType" desc="节点类型" >01</string>
+				<string name="name" required="true" desc="名称"/>
+				<string name="code" required="true" desc="编码"/>
+				<string name="templateType" required="true" desc="模板类型"/>
+				<string name="scripts" required="true" desc="模板代码"/>
+				<string name="keyword" desc="关键字" />
+				<string name="remark" desc="备注" />
+				<string name="status" desc="状态" >1</string>
+			</Record>
+		</context>
+		<step id="step0" on0Target="step1" onOtherTarget="error" class-ref="CheckByCountStep">
+			<context>
+				<string name="mapSet">input</string>
+				<string name="alert">模板编码重复，请重新填写.</string>
+				<string name="resource">wcms.template.check</string>
+			</context>
+		</step>
+		<step id="step1" on0Target="next" onOtherTarget="error" class-ref="InsertStep">
+			<context>
+				<string name="mapSet">input</string>
+				<string name="resource">wcms.template.create</string>
+			</context>
+		</step>
+		<step id="versionStep" on0Target="return" onOtherTarget="error"
+			  full-class="cn.newstrength.wcms.sysadmin.template.step.AddVersionForCreateStep">
+			<context>
+				<string name="mapSet">input</string>
+			</context>
+		</step>
+	</operation>
+	
+	<operation id="/template/list" name="模板列表" type="api" token="true">
+		<context>
+			<Record name="input">
+				<string name="name" desc="名称"/>
+				<string name="code" desc="编码"/>
+				<string name="status" desc="状态"/>
+				<string name="templateType" desc="模板类型"/>
+				<string name="keyword" desc="关键字" />
+				<int name="currentPage" desc="当前页">1</int>
+				<int name="pageSize" desc="每页显示">30</int>
+				<int name="siteId" required="true" desc="所属站点" />
+			</Record>
+		</context>
+		<step id="step1" on0Target="return" onOtherTarget="error" class-ref="QueryForListPageStep">
+			<context>
+				<string name="mapSet">input</string>
+				<string name="resource">wcms.template.query</string>
+			</context>
+		</step>
+	</operation>
+
+	<operation id="/template/update" name="更新模板" type="api" token="true">
+		<context>
+			<Record name="input">
+				<int name="templateId" required="true" desc="模板ID" />
+				<string name="templateType" required="true" desc="模板类型"/>
+				<string name="name" required="true" desc="名称" />
+				<string name="remark" desc="备注" />
+				<string name="scripts" required="true" desc="模板代码" />
+				<string name="keyword" desc="关键字" />
+				<string name="status" required="true" desc="状态" />
+				<boolean name="addVersion" required="false" desc="是否记录为版本">false</boolean>
+				<string name="verRemark" desc="版本备注"/>
+			</Record>
+		</context>
+		<step id="step1" on0Target="next" onOtherTarget="error" class-ref="UpdateStep">
+			<context>
+				<string name="mapSet">input</string>
+				<string name="resource">wcms.template.update</string>
+			</context>
+		</step>
+		<step id="versionStep" on0Target="return" onOtherTarget="error"
+			  full-class="cn.newstrength.wcms.sysadmin.template.step.AddVersionForEditStep">
+			<context>
+				<string name="mapSet">input</string>
+			</context>
+		</step>
+	</operation>
+		
+	<operation id="/template/getById" name="获取模板详情" type="api" token="true">
+		<context>
+			<Record name="input">
+				<int name="templateId" required="true" desc="模板ID" />
+			</Record>
+		</context>
+		<step id="step1" on0Target="return" onOtherTarget="error" class-ref="QueryForObjectStep">
+			<context>
+				<string name="mapSet">input</string>
+				<string name="resource">wcms.template.query</string>
+			</context>
+		</step>
+	</operation>
+	
+	<operation id="/template/export" name="模板导出" type="api" token="false">
+		<context>
+			<Record name="input">
+				<string name="templateIds" required="true" desc="模板"/>
+			</Record>
+		</context>
+		<step id="step1" on0Target="return" onOtherTarget="error" full-class="cn.newstrength.wcms.sysadmin.step.template.ExportStep">
+			<context>
+				<string name="mapSet">input</string>
+				<string name="resource">wcms.template.queryForExport</string>
+			</context>
+		</step>
+	</operation>
+	
+	<operation id="/template/download" name="模板下载" type="api" token="false">
+		<context>
+			<Record name="input">
+				<string name="key" required="true" desc="File key" />
+				<string name="filename" required="true" desc="File name" />
+			</Record>
+		</context>
+		<step id="step1" on0Target="return" onOtherTarget="error" class-ref="SimpleDownloadStep">
+			<context>
+				<string name="mapSet">input</string>
+			</context>
+		</step>
+	</operation>
+			
+	<operation id="/template/import" name="模板导入" type="api" token="true">
+		<context>
+			<Record name="input">
+				<int name="siteId" required="true" desc="所属站点" />
+				<int name="parentId" desc="父模板" >0</int>
+				<string name="nodeType" desc="节点类型" >01</string>
+				<string name="templateType" required="true" desc="模板类型"/>
+				<string name="status" desc="状态" >1</string>
+			</Record>
+		</context>
+		<step id="step1" on0Target="return" onOtherTarget="error" full-class="cn.newstrength.wcms.sysadmin.step.template.ImportStep">
+			<context>
+				<string name="mapSet">input</string>
+			</context>
+		</step>
+	</operation>
+		
+	<!-- 
+		TODO 待完善
+	 -->
+	<operation id="/template/deleteById" name="删除模板" type="api" token="true">
+		<context>
+			<Record name="input">
+				<int name="templateId" required="true" desc="模板ID" />
+			</Record>
+		</context>
+		<step id="step0" on0Target="step1" onOtherTarget="error" class-ref="CheckByCountStep">
+			<context>
+				<string name="mapSet">input</string>
+				<string name="alert">已有栏目正在使用该模板文件，请首先移除关联关系.</string>
+				<string name="resource">wcms.channel.template.checkByTemplateId</string>
+			</context>
+		</step>
+		<step id="step1" on0Target="next" onOtherTarget="error" class-ref="DeleteStep">
+			<context>
+				<string name="mapSet">input</string>
+				<string name="resource">wcms.template.deleteById</string>
+			</context>
+		</step>
+		<step id="delVersion" on0Target="return" onOtherTarget="error"
+			  full-class="cn.newstrength.wcms.sysadmin.template.step.DelVersionStep">
+			<context>
+				<string name="mapSet">input</string>
+			</context>
+		</step>
+	</operation>
+
+	<!-- 模板历史版本列表 -->
+	<operation id="/template/version/list" name="模板历史版本列表" type="api" token="true">
+		<context>
+			<Record name="input">
+				<int name="templateId" required="true" desc="模板ID" />
+			</Record>
+		</context>
+		<step id="versionsStep" on0Target="return" onOtherTarget="error"
+			  full-class="cn.newstrength.wcms.sysadmin.template.step.VersionsStep">
+			<context>
+				<string name="mapSet">input</string>
+			</context>
+		</step>
+	</operation>
+
+	<operation id="/template/version/preview" name="历史版本查看" type="api" token="true">
+		<context>
+			<Record name="input">
+				<int name="versionId" required="true" desc="版本id" />
+			</Record>
+		</context>
+		<step id="previewStep" on0Target="return" onOtherTarget="error"
+			  full-class="cn.newstrength.wcms.sysadmin.template.step.VersionViewStep">
+			<context>
+				<string name="mapSet">input</string>
+			</context>
+		</step>
+	</operation>
+
+	<operation id="/template/version/revert" name="版本回退" type="api" token="true">
+		<context>
+			<Record name="input">
+				<int name="versionId" required="true" desc="版本id" />
+			</Record>
+		</context>
+		<step id="revertStep" on0Target="return" onOtherTarget="error"
+			  full-class="cn.newstrength.wcms.sysadmin.template.step.VersionRevertStep">
+			<context>
+				<string name="mapSet">input</string>
+			</context>
+		</step>
+	</operation>
+</operation-cfg>

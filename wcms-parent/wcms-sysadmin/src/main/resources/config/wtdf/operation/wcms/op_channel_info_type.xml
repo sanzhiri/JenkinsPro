@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE operation-cfg PUBLIC "-//PAI//DTD OPERATIONS//CN" "http://wtdf.newstrength.cn/wtdf/wtdf-operations-3.0.dtd">
+<operation-cfg>
+
+	
+	<operation id="/channel/infotype/list" name="查询频道信息类型清单" type="api" token="true">
+		<context>
+			<Record name="input">
+				<int name="channelId" required="true" desc="频道ID" />
+			</Record>
+		</context>
+		<step id="step1" on0Target="return" onOtherTarget="error" full-class="cn.newstrength.wcms.sysadmin.step.channelInfo.GetChannelInfoStep">
+			<context>
+				<string name="mapSet">input</string>
+			</context>
+		</step>
+	</operation>
+	<operation id="/channel/infotype/listMarkSelected" name="查询WcmsInfoType清单" type="api" token="true">
+		<context>
+			<Record name="input">
+				<int name="channelId" required="true" desc="频道ID" />
+			</Record>
+		</context>
+		<step id="step1" on0Target="return" onOtherTarget="error" class-ref="QueryForListStep">
+			<context>
+				<string name="mapSet">input</string>
+				<string name="resource">wcms.channel.infotype.listMarkSelected</string>
+			</context>
+		</step>
+	</operation>	
+</operation-cfg>

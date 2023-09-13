@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:context="http://www.springframework.org/schema/context"
+	xmlns:aop="http://www.springframework.org/schema/aop"
+	xmlns:tx="http://www.springframework.org/schema/tx"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-4.3.xsd">
+
+	<bean id="actionParser" class="cn.newstrength.flowable.core.ActionParser" init-method="parser">
+		<property name="files">
+			<list>
+				<value>classpath:/config/action/flowable.xml</value>
+				<value>classpath:/config/action/wcms.xml</value>
+				<value>classpath:/config/action/widm.xml</value>
+			</list>
+		</property>
+	</bean>
+
+</beans>  

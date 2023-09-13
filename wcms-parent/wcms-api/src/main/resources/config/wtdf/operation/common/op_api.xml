@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  ~ Copyright (c) 2020, NewStrength. All rights reserved.
+  -->
+
+<!DOCTYPE operation-cfg PUBLIC "-//PAI//DTD OPERATIONS//CN" "http://wtdf.newstrength.cn/wtdf/wtdf-operations-3.0.dtd">
+<!--
+	ApiStep配置，项目组请勿修改
+	@Add by kyrie
+-->
+<operation-cfg>
+    <!-- 站点列表 -->
+    <opstep-def id="querySitesStep" full-class="cn.newstrength.wcms.site.api.step.QuerySitesStep" />
+    <!-- 站点详情 -->
+    <opstep-def id="querySiteStep" full-class="cn.newstrength.wcms.site.api.step.QuerySiteStep" />
+    <!-- 字典详情 -->
+    <opstep-def id="queryDicStep" full-class="cn.newstrength.wcms.dictionary.step.QueryDicStep" />
+    <!-- 字典列表 -->
+    <opstep-def id="queryDicsStep" full-class="cn.newstrength.wcms.dictionary.step.QueryDicsStep" />
+    <!-- 栏目树 -->
+    <opstep-def id="queryChannelTreeStep" full-class="cn.newstrength.wcms.channel.api.step.QueryChannelTreeStep" />
+    <!-- 栏目列表 -->
+    <opstep-def id="queryChannelsStep" full-class="cn.newstrength.wcms.channel.api.step.QueryChannelsStep" />
+    <!-- 面包屑导航 -->
+    <opstep-def id="queryBreadcrumbStep" full-class="cn.newstrength.wcms.channel.api.step.QueryBreadCrumbStep" />
+    <!-- 栏目详情 -->
+    <opstep-def id="queryChannelStep" full-class="cn.newstrength.wcms.channel.api.step.QueryChannelStep" />
+    <!-- 信息列表 -->
+    <opstep-def id="queryInfosStep" full-class="cn.newstrength.wcms.info.api.step.QueryInfosStep" />
+    <!-- 信息详情 -->
+    <opstep-def id="queryInfoStep" full-class="cn.newstrength.wcms.info.api.step.QueryInfoStep" />
+    <!-- Api token 校验 -->
+    <opstep-def id="apiAuthStep" full-class="cn.newstrength.wcms.core.api.auth.step.ApiAuthStep" />
+    <!-- Api token 校验,不校验siteCode 参数 -->
+    <opstep-def id="apiAuthExcludeSiteCodeStep" full-class="cn.newstrength.wcms.core.api.auth.step.ApiAuthExcludeSiteCodeStep" />
+</operation-cfg>

@@ -1,0 +1,88 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  ~ Copyright (c) 2020, NewStrength. All rights reserved.
+  -->
+<!DOCTYPE operation-cfg PUBLIC "-//PAI//DTD OPERATIONS//CN" "http://wtdf.newstrength.cn/wtdf/wtdf-operations-3.0.dtd">
+<operation-cfg>
+    <!-- 栏目树 -->
+    <operation id="/channel/tree" name="[Api]查询栏目树" type="api" token="true">
+        <context>
+            <Record name="input">
+                <string name="siteCode" required="true" desc="站点编码"/>
+                <string name="channelCode" required="false" desc="栏目编码"/>
+                <int name="level" required="false" desc="查询深度"/>
+                <string name="appId" required="true" desc="应用id"/>
+            </Record>
+        </context>
+        <step id="authStep" on0Target="next" onOtherTarget="error" class-ref="apiAuthStep">
+            <context>
+                <string name="mapSet">input</string>
+            </context>
+        </step>
+        <step id="queryChannelTreeStep" on0Target="return" onOtherTarget="error" class-ref="queryChannelTreeStep">
+            <context>
+                <string name="mapSet">input</string>
+            </context>
+        </step>
+    </operation>
+    <!-- 栏目列表 -->
+    <operation id="/channels" name="[Api]查询栏列表" type="api" token="true">
+        <context>
+            <Record name="input">
+                <string name="siteCode" required="true" desc="站点编码"/>
+                <string name="channelCode" required="true" desc="栏目编码"/>
+                <string name="appId" required="true" desc="应用id"/>
+            </Record>
+        </context>
+        <step id="authStep" on0Target="next" onOtherTarget="error" class-ref="apiAuthStep">
+            <context>
+                <string name="mapSet">input</string>
+            </context>
+        </step>
+        <step id="queryChannelsStep" on0Target="return" onOtherTarget="error" class-ref="queryChannelsStep">
+            <context>
+                <string name="mapSet">input</string>
+            </context>
+        </step>
+    </operation>
+    <!--面包屑导航-->
+    <operation id="/breadcrumb" name="[Api]查询面包屑导航" type="api" token="true">
+        <context>
+            <Record name="input">
+                <string name="siteCode" required="true" desc="站点编码"/>
+                <string name="channelCode" required="true" desc="栏目编码"/>
+                <string name="appId" required="true" desc="应用id"/>
+            </Record>
+        </context>
+        <step id="authStep" on0Target="next" onOtherTarget="error" class-ref="apiAuthStep">
+            <context>
+                <string name="mapSet">input</string>
+            </context>
+        </step>
+        <step id="queryBreadcrumbStep" on0Target="return" onOtherTarget="error" class-ref="queryBreadcrumbStep">
+            <context>
+                <string name="mapSet">input</string>
+            </context>
+        </step>
+    </operation>
+    <!--栏目详情-->
+    <operation id="/channel" name="[Api]查询栏目详情" type="api" token="true">
+        <context>
+            <Record name="input">
+                <string name="siteCode" required="true" desc="站点编码"/>
+                <string name="channelCode" required="true" desc="栏目编码"/>
+                <string name="appId" required="true" desc="应用id"/>
+            </Record>
+        </context>
+        <step id="authStep" on0Target="next" onOtherTarget="error" class-ref="apiAuthStep">
+            <context>
+                <string name="mapSet">input</string>
+            </context>
+        </step>
+        <step id="queryChannelStep" on0Target="return" onOtherTarget="error" class-ref="queryChannelStep">
+            <context>
+                <string name="mapSet">input</string>
+            </context>
+        </step>
+    </operation>
+</operation-cfg>

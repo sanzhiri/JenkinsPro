@@ -1,0 +1,7 @@
+/.settings/
+/.classpath
+/target/
+/.project
+/logs/
+/.factorypath
+/application.pid

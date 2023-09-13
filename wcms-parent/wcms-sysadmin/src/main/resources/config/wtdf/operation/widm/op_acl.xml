@@ -1,0 +1,150 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE operation-cfg PUBLIC "-//PAI//DTD OPERATIONS//CN" "http://wtdf.newstrength.cn/wtdf/wtdf-operations-3.0.dtd">
+<operation-cfg>
+
+	<operation id="/acl/logic/list" name="逻辑表达式查询" type="api" token="true">
+		<step id="step1" on0Target="return" onOtherTarget="error" class-ref="QueryForListStep">
+			<context>
+				<string name="resource">widm.logic.list</string>
+			</context>
+		</step>
+	</operation>
+
+	<operation id="/acl/query/list" name="查询条件定义" type="api" token="true">
+		<step id="step1" on0Target="return" onOtherTarget="error" class-ref="QueryForListStep">
+			<context>
+				<string name="resource">widm.query.list</string>
+			</context>
+		</step>
+	</operation>
+	
+	<operation id="/acl/table/columns" name="数据权限列查询" type="api" token="true">
+		<context>
+			<Record name="input">
+				<string name="tableId" required="true" desc="表主键"/>
+			</Record>
+		</context>
+		<step id="step1" on0Target="return" onOtherTarget="error" class-ref="QueryForListStep">
+			<context>
+				<string name="mapSet">input</string>
+				<string name="resource">widm.column.listByTableId</string>
+			</context>
+		</step>
+	</operation>	
+	
+	<operation id="/acl/data/conditions/save" name="绑定列关系" type="api" token="true">
+		<context>
+			<Record name="input">
+				<int name="tableId" required="true" desc="表主键"/>
+				<int name="columnId" required="true" desc="列主键"/>
+				<int name="roleId" required="true" desc="角色主键"/>
+				<string name="logicKey" required="true" desc="逻辑关系"/>
+				<string name="queryKey" required="true" desc="查询定义"/>
+				<string name="condition" desc="条件值"/>
+			</Record>
+		</context>
+		<step id="step1" on0Target="return" onOtherTarget="error" full-class="cn.newstrength.widm.step.acl.SaveConditionStep">
+			<context>
+				<string name="mapSet">input</string>
+				<string name="resource">widm.acl.condition.insert</string>
+			</context>
+		</step>
+	</operation>
+
+	<operation id="/acl/data/conditions/edit" name="编辑绑定列关系" type="api" token="true">
+		<context>
+			<Record name="input">
+				<string name="id" required="true" desc="ID"/>
+			</Record>
+		</context>
+		<step id="step1" on0Target="return" onOtherTarget="error" class-ref="QueryForObjectStep">
+			<context>
+				<string name="mapSet">input</string>
+				<string name="resource">widm.acl.condition.getById</string>
+			</context>
+		</step>
+	</operation>
+
+	<operation id="/acl/data/conditions/update" name="更新绑定列关系" type="api" token="true">
+		<context>
+			<Record name="input">
+				<string name="id" required="true" desc="ID"/>
+				<string name="logicKey" required="true" desc="逻辑关系"/>
+				<string name="queryKey" required="true" desc="查询定义"/>
+				<string name="condition" desc="条件值"/>
+			</Record>
+		</context>
+		<step id="step1" on0Target="return" onOtherTarget="error" class-ref="UpdateStep">
+			<context>
+				<string name="mapSet">input</string>
+				<string name="resource">widm.acl.condition.update</string>
+			</context>
+		</step>
+	</operation>
+
+	<operation id="/acl/data/conditions" name="查询角色数据权限条件信息" type="api" token="true">
+		<context>
+			<Record name="input">
+				<string name="tableId" required="true" desc="表主键"/>
+				<string name="roleId" required="true" desc="角色主键"/>
+			</Record>
+		</context>
+		<step id="step1" on0Target="return" onOtherTarget="error" class-ref="QueryForListStep">
+			<context>
+				<string name="mapSet">input</string>
+				<string name="resource">widm.acl.condition.query</string>
+			</context>
+		</step>
+	</operation>
+		
+	<operation id="/acl/data/scripts" name="查询角色数据 查询角色数据权限脚本信息" type="api" token="true">
+		<context>
+			<Record name="input">
+				<int name="tableId" required="true" desc="受控表主键"/>
+				<int name="roleId" required="true" desc="角色主键"/>
+			</Record>
+		</context>
+		<step id="step1" on0Target="return" onOtherTarget="error" class-ref="QueryForObjectStep">
+			<context>
+				<string name="mapSet">input</string>
+				<string name="resource">widm.acl.data.scripts</string>
+			</context>
+		</step>
+	</operation>	
+	
+	<operation id="/acl/data/save" name="保存数据权限关系" type="api" token="true">
+		<context>
+			<Record name="input">
+				<int name="tableId" required="true" desc="受控表主键"/>
+				<int name="roleId" required="true" desc="角色主键"/>
+				<string name="conditions" filter="urldecoder" required="true" desc="查询条件"/>
+				<string name="aclScripts" required="true" desc="控制脚本"/>
+			</Record>
+		</context>
+		<step id="step1" on0Target="return" onOtherTarget="error" full-class="cn.newstrength.widm.step.acl.SaveStep">
+			<context>
+				<string name="mapSet">input</string>
+			</context>
+		</step>
+	</operation>
+	
+	<operation id="/acl/data/delete" name="删除角色的数据权限控制" type="api" token="true">
+		<context>
+			<Record name="input">
+				<int name="tableId" required="true" desc="受控表主键"/>
+				<int name="roleId" required="true" desc="角色主键"/>
+			</Record>
+		</context>
+		<step id="step1" on0Target="return" onOtherTarget="error" class-ref="DeleteMultiStep">
+			<context>
+				<string name="mapSet">input</string>
+				<string name="resource">["widm.acl.condition.delete","widm.acl.data.delete"]</string>
+			</context>
+		</step>
+	</operation>		
+</operation-cfg>
+
+
+
+
+
